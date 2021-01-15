@@ -59,26 +59,12 @@ function addShape() {
   const randomShapeKey = shapeKeys[randomShapeIndex] 
   const randomShape = shapeArrays[randomShapeKey]
   activeShapeCoords = randomShape
-  // console.log(activeShapeCoords)
+  shapeMoving = true
+  
   randomShape.forEach(element => {
     cellsArray[element].classList.add('shape')        
     cellsArray[element].classList.add('active-shape')  
   })
-  
-  // ? below starts set interval moving shape down the grid
-  const shapeMovementInterval = setInterval(() => {
-    // console.log(activeShapeCoords)
-    for(let i = 0; i < activeShapeCoords.length; i++) {
-      // console.log(cellsArray[activeShapeCoords[i]].id);
-      if(cellsArray[activeShapeCoords[i]] > width && cellsArray[activeShapeCoords[i - width]].classList.contains('active-shape')) {
-        console.log('hi');
-        cellsArray[activeShapeCoords[i]].classList.remove('active-shape')
-      }
-      activeShapeCoords[i] += width
-      cellsArray[activeShapeCoords[i]].classList.add('active-shape')
-      // console.log(activeShapeCoords);
-    }
-  }, 1000);
 }
 addShape()
 
@@ -87,13 +73,24 @@ function startGame() {
   addObject()
 }
 
-function checkCollusion() {
+function checkCollision() {
   activeShapeCoords.forEach(num => {
-    if(blockedCells.includes(num + width)) {
+    // console.log(blockedCells);
+    if(blockedCells.includes(String(num + width))) {
       shapeMoving = false
-      blockedCells.push(activeShapeCoords)
-      document.getElementById(num).classList.remove('active-shape')
-      document.getElementById(num).classList.add('inactive-shape')
+      // blockedCells.push(String(nu))
+      blockedCells = [].concat.apply([], blockedCells)
+      // console.log(blockedCells);
+      // rather than just num remove active for all and add inactive for all active coords
+      activeShapeCoords.forEach(element => {
+        cellsArray[element].classList.remove('active-shape')
+        cellsArray[element].classList.add('inactive-shape')
+        blockedCells.push(String(element))
+      })
+      
+
+      // document.getElementById(num).classList.remove('active-shape')
+      // document.getElementById(num).classList.add('inactive-shape')
       addShape()
     }
 
@@ -117,6 +114,20 @@ function gameOver() {
   
 }
 // ! **************************
+
+
+const shapeMovementInterval = setInterval(() => {
+  if(shapeMoving === true) {  
+    for (let i = 0; i < activeShapeCoords.length; i++) {
+      cellsArray[activeShapeCoords[i]].classList.remove('active-shape')
+      activeShapeCoords[i] += width
+    }
+    activeShapeCoords.forEach(num => {
+        cellsArray[num].classList.add('active-shape')
+    })
+    checkCollision()
+  }
+}, 500);
 
 
 // ! ************ EVENT LISTENERS **************
