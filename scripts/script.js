@@ -73,7 +73,7 @@ function startGame() {
 function checkCollision() {
   let hasCollision = false
   activeShapeCoords.forEach(num => {
-    if(blockedCells.includes(num + width)) {
+    if(blockedCells.includes(num + width) || inactiveCells.includes(num + width)) {
       shapeMoving = false
       hasCollision = true
     }
@@ -82,10 +82,9 @@ function checkCollision() {
     activeShapeCoords.forEach(element => {
       cellsArray[element].classList.remove('active-shape')
       cellsArray[element].classList.add('inactive-shape')
-      inactiveCells.push(element)
     })
-    blockedCells.push(activeShapeCoords)
-    blockedCells = blockedCells.flat()
+    inactiveCells.push(activeShapeCoords)
+    inactiveCells = inactiveCells.flat()
     addShape()
   }
 }
@@ -122,7 +121,7 @@ const shapeMovementInterval = setInterval(() => {
     })
   }
   checkCollision()
-}, 500);
+}, 200);
 
 // ! **************************
 
@@ -144,7 +143,15 @@ pauseButton.addEventListener('click', () => {
 
 resetButton.addEventListener('click', () => {
   if(gameActive) {
-    cellsArray.forEach
+    shapeMoving = false
+    gameActive = 0
+    inactiveCells = []
+    pauseButton.innerHTML = 'Pause'
+    cellsArray.forEach(cell => {
+      cell.classList.remove('shape')
+      cell.classList.remove('active-shape')
+      cell.classList.remove('inactive-shape')
+    })
   }
 })
 
