@@ -8,6 +8,8 @@ let rowsCleared = 0
 let score = 0
 let shapeMoving = false
 let blockedCells = []
+let inactiveCells = []
+let gameActive = 0
 // ? object with arrays of shapes starting coords
 const shapeArrays = {
   squareShape: [5, 6, 17, 18],
@@ -22,6 +24,7 @@ let activeShapeCoords = []
 // ?  dom variables
 const grid = document.querySelector('.grid')
 const startButton = document.querySelector('.start-button')
+const pauseButton = document.querySelector('.pause-button')
 const resetButton = document.querySelector('.reset-button')
 // ! **************************
 
@@ -37,15 +40,9 @@ for (let i = 0; i < numCells; i++) {
   grid.appendChild(cell)
   cell.style.width = `${100 / width}%`
   cell.style.height = `${100 / height}%`
-  if (i % width === 0) {
+  if ((i % width === 0) || (i % width === width - 1) || (i + width >= width * height)) {
     cell.classList.add('walls')
-    blockedCells.push(cell.id)
-  } else if (i % width === width - 1) {
-    cell.classList.add('walls')
-    blockedCells.push(cell.id)
-  } else if (i + width >= width * height) {
-    cell.classList.add('walls')
-    blockedCells.push(cell.id)
+    blockedCells.push(Number(cell.id))
   }
 }
 // ! **************************
@@ -54,6 +51,7 @@ for (let i = 0; i < numCells; i++) {
 // ! ************ FUNCTIONS **************
 function addShape() {
   // ? below selects random shape from object and inserts into onto the grid
+  gameActive =+ 1
   const shapeKeys = Object.keys(shapeArrays)
   const randomShapeIndex = Math.floor(Math.random() * shapeKeys.length) 
   const randomShapeKey = shapeKeys[randomShapeIndex] 
@@ -66,7 +64,6 @@ function addShape() {
     cellsArray[element].classList.add('active-shape')  
   })
 }
-addShape()
 
 function startGame() {
   resetGame()
@@ -74,27 +71,23 @@ function startGame() {
 }
 
 function checkCollision() {
+  let hasCollision = false
   activeShapeCoords.forEach(num => {
-    // console.log(blockedCells);
-    if(blockedCells.includes(String(num + width))) {
+    if(blockedCells.includes(num + width)) {
       shapeMoving = false
-      // blockedCells.push(String(nu))
-      blockedCells = [].concat.apply([], blockedCells)
-      // console.log(blockedCells);
-      // rather than just num remove active for all and add inactive for all active coords
-      activeShapeCoords.forEach(element => {
-        cellsArray[element].classList.remove('active-shape')
-        cellsArray[element].classList.add('inactive-shape')
-        blockedCells.push(String(element))
-      })
-      
-
-      // document.getElementById(num).classList.remove('active-shape')
-      // document.getElementById(num).classList.add('inactive-shape')
-      addShape()
+      hasCollision = true
     }
-
   })
+  if (hasCollision) {
+    activeShapeCoords.forEach(element => {
+      cellsArray[element].classList.remove('active-shape')
+      cellsArray[element].classList.add('inactive-shape')
+      inactiveCells.push(element)
+    })
+    blockedCells.push(activeShapeCoords)
+    blockedCells = blockedCells.flat()
+    addShape()
+  }
 }
 
 function rotateShape() {
@@ -115,21 +108,45 @@ function gameOver() {
 }
 // ! **************************
 
-
+// ! ************ SET INTERVALS **************
 const shapeMovementInterval = setInterval(() => {
-  if(shapeMoving === true) {  
-    for (let i = 0; i < activeShapeCoords.length; i++) {
-      cellsArray[activeShapeCoords[i]].classList.remove('active-shape')
-      activeShapeCoords[i] += width
-    }
+  if(shapeMoving) {  
+    let newCoords = []
     activeShapeCoords.forEach(num => {
-        cellsArray[num].classList.add('active-shape')
+      cellsArray[num].classList.remove('active-shape')
+      newCoords.push(num += width)
     })
-    checkCollision()
+    activeShapeCoords = newCoords
+    activeShapeCoords.forEach(num => {
+      cellsArray[num].classList.add('active-shape')
+    })
   }
+  checkCollision()
 }, 500);
 
+// ! **************************
 
 // ! ************ EVENT LISTENERS **************
+startButton.addEventListener('click', () => {
+  if (gameActive) return 
+  addShape()
+}) 
+
+pauseButton.addEventListener('click', () => {
+  if (shapeMoving && gameActive) {
+    shapeMoving = false
+    pauseButton.innerHTML = 'Resume'
+  } else if (!shapeMoving && gameActive) {
+    shapeMoving = true
+    pauseButton.innerHTML = 'Pause'
+  }
+}) 
+
+resetButton.addEventListener('click', () => {
+  if(gameActive) {
+    cellsArray.forEach
+  }
+})
+
 
 // ! **************************
