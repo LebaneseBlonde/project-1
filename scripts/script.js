@@ -7,8 +7,11 @@ let cellsArray = []
 let rowsCleared = 0
 let score = 0
 let shapeMoving = false
+let ableToMove = true
+let hasCollision = false
 let blockedCells = []
 let inactiveCells = []
+let newCoords = []
 let gameActive = 0
 // ? object with arrays of shapes starting coords
 const shapeArrays = {
@@ -71,7 +74,7 @@ function startGame() {
 }
 
 function checkCollision() {
-  let hasCollision = false
+  hasCollision = false
   activeShapeCoords.forEach(num => {
     if(blockedCells.includes(num + width) || inactiveCells.includes(num + width)) {
       shapeMoving = false
@@ -89,6 +92,28 @@ function checkCollision() {
   }
 }
 
+function checkShapeMove() {
+  activeShapeCoords.forEach(num => {
+    if((blockedCells.includes(num -= 1) || inactiveCells.includes(num -= 1)) ||
+      (blockedCells.includes(num += 1) || inactiveCells.includes(num += 1))) {
+        ableToMove = false
+    }
+  })
+}
+
+// function moveShape(numToMove) {
+//   newCoords = []
+//     activeShapeCoords.forEach(num => {
+//       cellsArray[num].classList.remove('active-shape')
+//       newCoords.push(num += numToMove)
+//     })
+//     activeShapeCoords = newCoords
+//     activeShapeCoords.forEach(num => {
+//       cellsArray[num].classList.add('active-shape')
+//     })
+//   checkCollision()
+// }
+
 function rotateShape() {
   
 }
@@ -98,7 +123,17 @@ function clearRow() {
 }
 
 function resetGame() {
-  
+    shapeMoving = false
+    gameActive = 0
+    inactiveCells = []
+    rowsCleared = 0
+    score = 0
+    pauseButton.innerHTML = 'Pause'
+    cellsArray.forEach(cell => {
+      cell.classList.remove('shape')
+      cell.classList.remove('active-shape')
+      cell.classList.remove('inactive-shape')
+    })
 }
 
 
@@ -110,7 +145,7 @@ function gameOver() {
 // ! ************ SET INTERVALS **************
 const shapeMovementInterval = setInterval(() => {
   if(shapeMoving) {  
-    let newCoords = []
+    newCoords = []
     activeShapeCoords.forEach(num => {
       cellsArray[num].classList.remove('active-shape')
       newCoords.push(num += width)
@@ -143,19 +178,22 @@ pauseButton.addEventListener('click', () => {
 
 resetButton.addEventListener('click', () => {
   if(gameActive) {
-    shapeMoving = false
-    gameActive = 0
-    inactiveCells = []
-    rowsCleared = 0
-    score = 0
-    pauseButton.innerHTML = 'Pause'
-    cellsArray.forEach(cell => {
-      cell.classList.remove('shape')
-      cell.classList.remove('active-shape')
-      cell.classList.remove('inactive-shape')
-    })
+    resetGame()
   }
 })
 
+document.addEventListener('keyup', (event) => {
+  const key = event.key
+
+  if (key === 'w' && !hasCollision) {
+    console.log('rotate');
+  } else if (key === 'a' && !hasCollision && ableToMove) {
+     -= 1
+  } else if (key === 's' && !hasCollision && ableToMove) {
+    console.log('im fast as fuck boiiii!');
+  } else if (key === 'd' && !hasCollision && ableToMove) {
+    harry += 1
+  }
+})
 
 // ! **************************
