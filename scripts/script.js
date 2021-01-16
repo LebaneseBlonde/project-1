@@ -146,6 +146,8 @@ resetButton.addEventListener('click', () => {
     shapeMoving = false
     gameActive = 0
     inactiveCells = []
+    rowsCleared = 0
+    score = 0
     pauseButton.innerHTML = 'Pause'
     cellsArray.forEach(cell => {
       cell.classList.remove('shape')
