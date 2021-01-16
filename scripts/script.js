@@ -101,18 +101,17 @@ function checkShapeMove() {
   })
 }
 
-// function moveShape(numToMove) {
-//   newCoords = []
-//     activeShapeCoords.forEach(num => {
-//       cellsArray[num].classList.remove('active-shape')
-//       newCoords.push(num += numToMove)
-//     })
-//     activeShapeCoords = newCoords
-//     activeShapeCoords.forEach(num => {
-//       cellsArray[num].classList.add('active-shape')
-//     })
-//   checkCollision()
-// }
+function moveShape(numToMove) {
+  newCoords = []
+    activeShapeCoords.forEach(num => {
+      cellsArray[num].classList.remove('active-shape')
+      newCoords.push(num += numToMove)
+    })
+    activeShapeCoords = newCoords
+    activeShapeCoords.forEach(num => {
+      cellsArray[num].classList.add('active-shape')
+    })
+}
 
 function rotateShape() {
   
@@ -145,15 +144,7 @@ function gameOver() {
 // ! ************ SET INTERVALS **************
 const shapeMovementInterval = setInterval(() => {
   if(shapeMoving) {  
-    newCoords = []
-    activeShapeCoords.forEach(num => {
-      cellsArray[num].classList.remove('active-shape')
-      newCoords.push(num += width)
-    })
-    activeShapeCoords = newCoords
-    activeShapeCoords.forEach(num => {
-      cellsArray[num].classList.add('active-shape')
-    })
+    moveShape(width)
   }
   checkCollision()
 }, 200);
@@ -188,11 +179,11 @@ document.addEventListener('keyup', (event) => {
   if (key === 'w' && !hasCollision) {
     console.log('rotate');
   } else if (key === 'a' && !hasCollision && ableToMove) {
-     -= 1
+     moveShape(-1)
   } else if (key === 's' && !hasCollision && ableToMove) {
     console.log('im fast as fuck boiiii!');
   } else if (key === 'd' && !hasCollision && ableToMove) {
-    harry += 1
+    moveShape(1)
   }
 })
 
