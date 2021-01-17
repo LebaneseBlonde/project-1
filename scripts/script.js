@@ -148,12 +148,25 @@ function rotateShape() {
 
 function clearRow() {
   const rowsArray = Object.values(rows)
+  // rowsArray.forEach(row => {
+  //   row.forEach(cell => {
+  //     if (cell.classList.contains('inactive-shape')) {
+  //       console.log('hi')
+  //     }
+  //   })
+  // })
   rowsArray.forEach(row => {
-    if (row.forEach(cell) => {cell.classList.contains('inactive-cell')}) {
+    const rowFull = row.every(cell => {
+      cellsArray[cell].classList.contains('inactive-shape')
+    })
+    if (rowFull) {
       console.log('hi')
     }
   })
+  // console.log(rowsArray)
+  // console.log(cellsArray)
 }
+// clearRow()
 
 function resetGame() {
     shapeMoving = false
