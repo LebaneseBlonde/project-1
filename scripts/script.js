@@ -7,12 +7,15 @@ let cellsArray = []
 let rowsCleared = 0
 let score = 0
 let shapeMoving = false
-let ableToMove = true
+let ableToMoveLeft = true
+let ableToMoveRight = true
 let hasCollision = false
-let blockedCells = []
+let floorCells = []
+let wallCells = []
 let inactiveCells = []
 let newCoords = []
 let gameActive = 0
+let intervalTime = 500
 // ? object with arrays of shapes starting coords
 const shapeArrays = {
   squareShape: [5, 6, 17, 18],
@@ -43,9 +46,12 @@ for (let i = 0; i < numCells; i++) {
   grid.appendChild(cell)
   cell.style.width = `${100 / width}%`
   cell.style.height = `${100 / height}%`
-  if ((i % width === 0) || (i % width === width - 1) || (i + width >= width * height)) {
+  if ((i % width === 0) || (i % width === width - 1)) {
     cell.classList.add('walls')
-    blockedCells.push(Number(cell.id))
+    wallCells.push(Number(cell.id))
+  } else if (i + width >= width * height) {
+    cell.classList.add('walls')
+    floorCells.push(Number(cell.id))
   }
 }
 // ! **************************
@@ -76,7 +82,7 @@ function startGame() {
 function checkCollision() {
   hasCollision = false
   activeShapeCoords.forEach(num => {
-    if(blockedCells.includes(num + width) || inactiveCells.includes(num + width)) {
+    if(floorCells.includes(num + width) || inactiveCells.includes(num + width)) {
       shapeMoving = false
       hasCollision = true
     }
@@ -93,10 +99,15 @@ function checkCollision() {
 }
 
 function checkShapeMove() {
+  ableToMoveLeft = true
+  ableToMoveRight = true
   activeShapeCoords.forEach(num => {
-    if((blockedCells.includes(num -= 1) || inactiveCells.includes(num -= 1)) ||
-      (blockedCells.includes(num += 1) || inactiveCells.includes(num += 1))) {
-        ableToMove = false
+    if(wallCells.includes(num -= 1) || inactiveCells.includes(num -= 1)) {
+      ableToMoveLeft = false
+      console.log('no left');
+    } else if ((wallCells.includes(num += 3) || inactiveCells.includes(num += 1))) {
+      ableToMoveRight = false
+      console.log('no right');
     }
   })
 }
@@ -146,6 +157,7 @@ const shapeMovementInterval = setInterval(() => {
   if(shapeMoving) {  
     moveShape(width)
   }
+  checkShapeMove()
   checkCollision()
 }, 200);
 
@@ -160,9 +172,13 @@ startButton.addEventListener('click', () => {
 pauseButton.addEventListener('click', () => {
   if (shapeMoving && gameActive) {
     shapeMoving = false
+    ableToMoveLeft = false
+    ableToMoveRight = false
     pauseButton.innerHTML = 'Resume'
   } else if (!shapeMoving && gameActive) {
     shapeMoving = true
+    ableToMoveLeft = true
+    ableToMoveRight = false
     pauseButton.innerHTML = 'Pause'
   }
 }) 
@@ -176,13 +192,13 @@ resetButton.addEventListener('click', () => {
 document.addEventListener('keyup', (event) => {
   const key = event.key
 
-  if (key === 'w' && !hasCollision) {
+  if (key === 'w' && !hasCollision && gameActive) {
     console.log('rotate');
-  } else if (key === 'a' && !hasCollision && ableToMove) {
+  } else if (key === 'a' && !hasCollision && ableToMoveLeft && gameActive) {
      moveShape(-1)
-  } else if (key === 's' && !hasCollision && ableToMove) {
+  } else if (key === 's' && !hasCollision && gameActive) {
     console.log('im fast as fuck boiiii!');
-  } else if (key === 'd' && !hasCollision && ableToMove) {
+  } else if (key === 'd' && !hasCollision && ableToMoveRight && gameActive) {
     moveShape(1)
   }
 })
