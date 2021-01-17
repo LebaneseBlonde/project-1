@@ -4,6 +4,8 @@ const width = 12
 const height = 21
 const numCells = width * height
 let cellsArray = []
+let rowStartCells = []
+let rows = {}
 let rowsCleared = 0
 let score = 0
 let shapeMoving = false
@@ -53,7 +55,22 @@ for (let i = 0; i < numCells; i++) {
     cell.classList.add('walls')
     floorCells.push(Number(cell.id))
   }
+  if (i % width === 0 + 1) {
+    cell.classList.add('row-start-cell')
+    rowStartCells.push(Number(cell.id))
+    rowStartCells.forEach(startCells => {
+    })
+  }
 }
+rowStartCells.pop()
+
+rowStartCells.forEach((cell, index) => {
+  rows[index] = []
+  for (let i = 0; i < width -2; i++) {
+    rows[index].push(Number(cellsArray[cell + i].id))
+  }
+})
+
 // ! **************************
 
 
@@ -69,6 +86,7 @@ function addShape() {
   shapeMoving = true
   
   randomShape.forEach(element => {
+    intervalTime = 500
     cellsArray[element].classList.add('shape')        
     cellsArray[element].classList.add('active-shape')  
   })
@@ -104,10 +122,10 @@ function checkShapeMove() {
   activeShapeCoords.forEach(num => {
     if(wallCells.includes(num -= 1) || inactiveCells.includes(num -= 1)) {
       ableToMoveLeft = false
-      console.log('no left');
+      // console.log('no left');
     } else if ((wallCells.includes(num += 3) || inactiveCells.includes(num += 1))) {
       ableToMoveRight = false
-      console.log('no right');
+      // console.log('no right');
     }
   })
 }
@@ -129,7 +147,12 @@ function rotateShape() {
 }
 
 function clearRow() {
-  
+  const rowsArray = Object.values(rows)
+  rowsArray.forEach(row => {
+    if (row.forEach(cell) => {cell.classList.contains('inactive-cell')}) {
+      console.log('hi')
+    }
+  })
 }
 
 function resetGame() {
@@ -171,6 +194,7 @@ function shapeMovementTimeout() {
   }
   checkShapeMove()
   checkCollision()
+  clearRow()
   setTimeout(shapeMovementTimeout, intervalTime)
 } 
 shapeMovementTimeout()
@@ -209,7 +233,7 @@ document.addEventListener('keydown', (event) => {
      moveShape(-1)
   } else if (key === 's' && !hasCollision && gameActive) {
     intervalTime = 200
-    console.log('im fast as fuck boiiii!');
+    // console.log('im fast as fuck boiiii!');
   } else if (key === 'd' && !hasCollision && ableToMoveRight && gameActive) {
     moveShape(1)
   }

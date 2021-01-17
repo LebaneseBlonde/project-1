@@ -31,8 +31,13 @@ body {
 
 .active-shape {
   background-color: lightblue;
+  /* transition: 100ms ease-in; */
 }
 
 .inactive-shape {
   background-color: lightgreen;
+}
+
+.row-start-cell {
+  color: red;
 }
