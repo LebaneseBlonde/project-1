@@ -17,7 +17,7 @@ let wallCells = []
 let inactiveCells = []
 let newCoords = []
 let gameActive = 0
-let intervalTime = 500
+let intervalTime = 400
 // ? object with arrays of shapes starting coords
 const shapeArrays = {
   squareShape: [5, 6, 17, 18],
@@ -86,7 +86,7 @@ function addShape() {
   shapeMoving = true
   
   randomShape.forEach(element => {
-    intervalTime = 500
+    intervalTime = 400
     cellsArray[element].classList.add('shape')        
     cellsArray[element].classList.add('active-shape')  
   })
@@ -148,25 +148,11 @@ function rotateShape() {
 
 function clearRow() {
   const rowsArray = Object.values(rows)
-  // rowsArray.forEach(row => {
-  //   row.forEach(cell => {
-  //     if (cell.classList.contains('inactive-shape')) {
-  //       console.log('hi')
-  //     }
-  //   })
-  // })
   rowsArray.forEach(row => {
-    const rowFull = row.every(cell => {
-      cellsArray[cell].classList.contains('inactive-shape')
-    })
-    if (rowFull) {
-      console.log('hi')
-    }
+    const rowFull = row.every(cell => cellsArray[cell].classList.contains('inactive-shape'))
+    if (rowFull) console.log('true', row)
   })
-  // console.log(rowsArray)
-  // console.log(cellsArray)
 }
-// clearRow()
 
 function resetGame() {
     shapeMoving = false
@@ -245,7 +231,7 @@ document.addEventListener('keydown', (event) => {
   if (key === 'a' && !hasCollision && ableToMoveLeft && gameActive) {
      moveShape(-1)
   } else if (key === 's' && !hasCollision && gameActive) {
-    intervalTime = 200
+    intervalTime = 100
     // console.log('im fast as fuck boiiii!');
   } else if (key === 'd' && !hasCollision && ableToMoveRight && gameActive) {
     moveShape(1)
@@ -254,7 +240,7 @@ document.addEventListener('keydown', (event) => {
 document.addEventListener('keyup', (event) => {
   const key = event.key
   if (key === 's' && !hasCollision && gameActive) {
-    intervalTime = 500
+    intervalTime = 400
   } else if (key === 'w' && !hasCollision && gameActive) {
     console.log('rotate');
   }
