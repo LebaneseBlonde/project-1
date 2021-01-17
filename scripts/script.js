@@ -153,14 +153,27 @@ function gameOver() {
 // ! **************************
 
 // ! ************ SET INTERVALS **************
+// const shapeMovementInterval = setInterval(() => {
+//   if(shapeMoving) {  
+//     moveShape(width)
+//   }
+//   checkShapeMove()
+//   checkCollision()
+// }, 200);
 const shapeMovementInterval = setInterval(() => {
-  if(shapeMoving) {  
+  checkShapeMove()
+  checkCollision()
+}, 50);
+
+function shapeMovementTimeout() {
+  if (shapeMoving) {
     moveShape(width)
   }
   checkShapeMove()
   checkCollision()
-}, 200);
-
+  setTimeout(shapeMovementTimeout, intervalTime)
+} 
+shapeMovementTimeout()
 // ! **************************
 
 // ! ************ EVENT LISTENERS **************
@@ -189,17 +202,24 @@ resetButton.addEventListener('click', () => {
   }
 })
 
-document.addEventListener('keyup', (event) => {
+document.addEventListener('keydown', (event) => {
   const key = event.key
 
-  if (key === 'w' && !hasCollision && gameActive) {
-    console.log('rotate');
-  } else if (key === 'a' && !hasCollision && ableToMoveLeft && gameActive) {
+  if (key === 'a' && !hasCollision && ableToMoveLeft && gameActive) {
      moveShape(-1)
   } else if (key === 's' && !hasCollision && gameActive) {
+    intervalTime = 200
     console.log('im fast as fuck boiiii!');
   } else if (key === 'd' && !hasCollision && ableToMoveRight && gameActive) {
     moveShape(1)
+  }
+})
+document.addEventListener('keyup', (event) => {
+  const key = event.key
+  if (key === 's' && !hasCollision && gameActive) {
+    intervalTime = 500
+  } else if (key === 'w' && !hasCollision && gameActive) {
+    console.log('rotate');
   }
 })
 
