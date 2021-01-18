@@ -144,13 +144,35 @@ function moveShape(numToMove) {
 
 function rotateShape() {
   
-}
+} 
 
 function clearRow() {
   const rowsArray = Object.values(rows)
   rowsArray.forEach(row => {
     const rowFull = row.every(cell => cellsArray[cell].classList.contains('inactive-shape'))
-    if (rowFull) console.log('true', row)
+    if (rowFull) {
+      row.forEach(cell => {
+        cellsArray[cell].classList.remove('inactive-shape')
+        const clearedInactive = inactiveCells.filter(cellId => cellId !== cell)
+        inactiveCells = clearedInactive
+        inactiveCells.map(cells => {
+          if (cells < row[0]) {
+            cellsArray[cells].classList.remove('inactive-shape')
+            cells += width
+            cellsArray[cells].classList.add('inactive-shape')
+            inactiveCells = []
+            cellsArray.forEach(el => {
+              if (el.classList.contains('inactive-shape')) {
+                inactiveCells.push(Number(el.id))
+                inactiveCells = inactiveCells.flat()
+              }
+            })
+          }
+        })
+        // console.log(inactiveCells, clearedInactive)
+      })
+      console.log('row full')
+    }
   })
 }
 
@@ -170,7 +192,16 @@ function resetGame() {
 
 
 function gameOver() {
-  
+  rows[0].forEach(cell => {
+  //  console.log(cell)
+    if(cellsArray[cell].classList.contains('inactive-shape')) {
+      shapeMoving = false
+      ableToMoveLeft = false
+      ableToMoveRight = false
+      gameActive = 0
+      console.log('game over')
+    }
+  }) 
 }
 // ! **************************
 
@@ -194,6 +225,7 @@ function shapeMovementTimeout() {
   checkShapeMove()
   checkCollision()
   clearRow()
+  gameOver()
   setTimeout(shapeMovementTimeout, intervalTime)
 } 
 shapeMovementTimeout()
