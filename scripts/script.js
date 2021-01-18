@@ -2,31 +2,25 @@
 // ? js variables
 const width = 10
 const height = 20
-// const numCells = width * height
 let cellsArray = []
-let rowStartCells = []
-let rows = {}
 let rowsCleared = 0
 let score = 0
 let shapeMoving = false
 let ableToMoveLeft = true
 let ableToMoveRight = true
 let hasCollision = false
-let floorCells = []
-let wallCells = []
 let inactiveCells = []
-let newCoords = []
 let gameActive = 0
 let intervalTime = 400
 // ? object with arrays of shapes starting coords
 const shapeArrays = {
   squareShape: ['0-4', '0-5', '1-4', '1-5'],
-  // lineShape: [4, 5, 6, 7],
-  // l1Shape: [5, 6, 7, 17],
-  // l2Shape: [5, 6, 7, 18],
-  // tShape: [5, 6, 7, 18],
-  // s1Shape: [5, 6, 16, 17],
-  // s2Shape: [5, 6, 18, 19]
+  lineShape: ['0-3', '0-4', '0-5', '0-6'],
+  l1Shape: ['0-3', '0-4', '0-5', '1-5'],
+  l2Shape: ['0-3', '0-4', '0-5', '1-3'],
+  tShape: ['0-4', '0-5', '0-6', '1-5'],
+  s1Shape: ['0-4', '0-5', '1-3', '1-4'],
+  s2Shape: ['0-4', '0-5', '1-5', '1-6']
 }
 let activeShapeCoords = []
 // ?  dom variables
@@ -61,7 +55,7 @@ for (let row = 0; row < height; row++) {
 // ! ************ FUNCTIONS **************
 function addShape() {
   // ? below selects random shape from object and inserts into onto the grid
-  gameActive =+ 1
+  gameActive++
   const shapeKeys = Object.keys(shapeArrays)
   const randomShapeIndex = Math.floor(Math.random() * shapeKeys.length) 
   const randomShapeKey = shapeKeys[randomShapeIndex] 
@@ -82,10 +76,11 @@ function startGame() {
 }
 
 function checkCollision() {
+  gameOver()
   hasCollision = false
   activeShapeCoords.forEach(coord => {
-    const x = Number(coord.toString().split('-')[1])
     const y = Number(coord.toString().split('-')[0])
+    const x = Number(coord.toString().split('-')[1])
     if (y === height - 1 || inactiveCells.includes(`${y + 1}-${x}`)) {
       shapeMoving = false
       hasCollision = true
@@ -118,7 +113,7 @@ function checkShapeMove() {
 }
 
 function moveShape(move, direction) {
-  newCoords = []
+  let newCoords = []
   activeShapeCoords.forEach(coord => {
     document.getElementById(coord).classList.remove('active-shape')
     const y = Number(coord.toString().split('-')[0])
@@ -146,6 +141,7 @@ function clearRow() {
   yCoords.forEach(num => rowCounts[num] = (rowCounts[num] || 0) + 1)
   for (const key in rowCounts) {
     if (rowCounts[key] === width) {
+      rowsCleared++
       for (let i = 0; i < width; i++) {
         document.getElementById(`${key}-${i}`).classList.remove('inactive-shape')
       }
@@ -186,24 +182,20 @@ function resetGame() {
 
 
 function gameOver() {
-  rows[0].forEach(cell => {
-    if(cellsArray[cell].classList.contains('inactive-shape')) {
+  inactiveCells.forEach(coord => {
+    const y = Number(coord.toString().split('-')[0])
+    if (y === 0) {
       shapeMoving = false
       ableToMoveLeft = false
       ableToMoveRight = false
       gameActive = 0
       console.log('game over')
     }
-  }) 
+  })
 }
 // ! **************************
 
 // ! ************ SET INTERVALS **************
-const shapeMovementInterval = setInterval(() => {
-  checkShapeMove()
-  checkCollision()
-}, 50);
-
 function shapeMovementTimeout() {
   if (shapeMoving) {
     moveShape(1, 'vertical')
@@ -243,6 +235,8 @@ resetButton.addEventListener('click', () => {
 })
 
 document.addEventListener('keydown', (event) => {
+  checkShapeMove()
+  checkCollision()
   const key = event.key
 
   if (key === 'a' && !hasCollision && ableToMoveLeft && gameActive) {
