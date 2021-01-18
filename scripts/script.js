@@ -122,10 +122,8 @@ function checkShapeMove() {
   activeShapeCoords.forEach(num => {
     if(wallCells.includes(num -= 1) || inactiveCells.includes(num -= 1)) {
       ableToMoveLeft = false
-      // console.log('no left');
     } else if ((wallCells.includes(num += 3) || inactiveCells.includes(num += 1))) {
       ableToMoveRight = false
-      // console.log('no right');
     }
   })
 }
@@ -139,12 +137,15 @@ function moveShape(numToMove) {
     activeShapeCoords = newCoords
     activeShapeCoords.forEach(num => {
       cellsArray[num].classList.add('active-shape')
+      // checkShapeMove()
+      // checkCollision()
     })
 }
 
 function rotateShape() {
   
 } 
+
 
 function clearRow() {
   const rowsArray = Object.values(rows)
@@ -153,24 +154,22 @@ function clearRow() {
     if (rowFull) {
       row.forEach(cell => {
         cellsArray[cell].classList.remove('inactive-shape')
-        const clearedInactive = inactiveCells.filter(cellId => cellId !== cell)
-        inactiveCells = clearedInactive
-        inactiveCells.map(cells => {
-          if (cells < row[0]) {
-            cellsArray[cells].classList.remove('inactive-shape')
-            cells += width
-            cellsArray[cells].classList.add('inactive-shape')
-            inactiveCells = []
-            cellsArray.forEach(el => {
-              if (el.classList.contains('inactive-shape')) {
-                inactiveCells.push(Number(el.id))
-                inactiveCells = inactiveCells.flat()
-              }
-            })
-          }
-        })
+        inactiveCells = inactiveCells.filter(cellId => cellId !== cell)
       })
+      let oldCells = []
+      let newCells = []
+      inactiveCells = inactiveCells.map(cell => {
+        if (cell >= row[0]) return cell
+        else {
+          oldCells.push(cell)
+          newCells.push(cell + width)
+          return cell + width
+        }
+      })
+      oldCells.forEach(cell => cellsArray[cell].classList.remove('inactive-shape'))
+      newCells.forEach(cell => cellsArray[cell].classList.add('inactive-shape'))
     }
+    //  to remove duplicates from an array > array = [...new Set(array)]
   })
 }
 
@@ -191,7 +190,6 @@ function resetGame() {
 
 function gameOver() {
   rows[0].forEach(cell => {
-  //  console.log(cell)
     if(cellsArray[cell].classList.contains('inactive-shape')) {
       shapeMoving = false
       ableToMoveLeft = false
@@ -223,7 +221,6 @@ function shapeMovementTimeout() {
   checkShapeMove()
   checkCollision()
   clearRow()
-  gameOver()
   setTimeout(shapeMovementTimeout, intervalTime)
 } 
 shapeMovementTimeout()
@@ -261,7 +258,7 @@ document.addEventListener('keydown', (event) => {
   if (key === 'a' && !hasCollision && ableToMoveLeft && gameActive) {
      moveShape(-1)
   } else if (key === 's' && !hasCollision && gameActive) {
-    intervalTime = 100
+    intervalTime = 55
     // console.log('im fast as fuck boiiii!');
   } else if (key === 'd' && !hasCollision && ableToMoveRight && gameActive) {
     moveShape(1)
@@ -273,6 +270,7 @@ document.addEventListener('keyup', (event) => {
     intervalTime = 400
   } else if (key === 'w' && !hasCollision && gameActive) {
     console.log('rotate');
+    rotateShape()
   }
 })
 
