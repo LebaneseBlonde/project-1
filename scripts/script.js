@@ -169,9 +169,7 @@ function clearRow() {
             })
           }
         })
-        // console.log(inactiveCells, clearedInactive)
       })
-      console.log('row full')
     }
   })
 }
