@@ -70,11 +70,6 @@ function addShape() {
   })
 }
 
-function startGame() {
-  resetGame()
-  addObject()
-}
-
 function checkCollision() {
   gameOver()
   hasCollision = false
@@ -133,7 +128,6 @@ function moveShape(move, direction) {
 function rotateShape() {
   
 } 
-
 
 function clearRow() {
   let rowCounts = {}
