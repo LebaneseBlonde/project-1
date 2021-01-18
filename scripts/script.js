@@ -1,8 +1,8 @@
 // ! ************ VARIABLES **************
 // ? js variables
-const width = 12
-const height = 21
-const numCells = width * height
+const width = 10
+const height = 20
+// const numCells = width * height
 let cellsArray = []
 let rowStartCells = []
 let rows = {}
@@ -20,13 +20,13 @@ let gameActive = 0
 let intervalTime = 400
 // ? object with arrays of shapes starting coords
 const shapeArrays = {
-  squareShape: [5, 6, 17, 18],
-  l1Shape: [5, 6, 7, 17],
-  l2Shape: [5, 6, 7, 18],
-  lineShape: [4, 5, 6, 7],
-  tShape: [5, 6, 7, 18],
-  s1Shape: [5, 6, 16, 17],
-  s2Shape: [5, 6, 18, 19]
+  squareShape: ['0-4', '0-5', '1-4', '1-5'],
+  // lineShape: [4, 5, 6, 7],
+  // l1Shape: [5, 6, 7, 17],
+  // l2Shape: [5, 6, 7, 18],
+  // tShape: [5, 6, 7, 18],
+  // s1Shape: [5, 6, 16, 17],
+  // s2Shape: [5, 6, 18, 19]
 }
 let activeShapeCoords = []
 // ?  dom variables
@@ -39,37 +39,21 @@ const resetButton = document.querySelector('.reset-button')
 
 // ! ************ INIT **************
 // ? create grid & cells - apply styling/classes
-for (let i = 0; i < numCells; i++) {
-  const cell = document.createElement('div')
-  cell.classList.add('cells')
-  cell.id = i
-  cell.innerHTML = i
-  cellsArray.push(cell)
-  grid.appendChild(cell)
-  cell.style.width = `${100 / width}%`
-  cell.style.height = `${100 / height}%`
-  if ((i % width === 0) || (i % width === width - 1)) {
-    cell.classList.add('walls')
-    wallCells.push(Number(cell.id))
-  } else if (i + width >= width * height) {
-    cell.classList.add('walls')
-    floorCells.push(Number(cell.id))
-  }
-  if (i % width === 0 + 1) {
-    cell.classList.add('row-start-cell')
-    rowStartCells.push(Number(cell.id))
-    rowStartCells.forEach(startCells => {
-    })
+const cell = document.createElement('div')
+for (let row = 0; row < height; row++) {
+  for (let column = 0; column < width; column++) {
+    const cell = document.createElement('div')
+    cell.classList.add('cells')
+    cell.setAttribute('row', row)
+    cell.setAttribute('column', column)
+    cell.innerHTML = `${row}-${column}`
+    cell.id = `${row}-${column}`
+    cell.style.width = `${100 / width}%`
+    cell.style.height = `${100 / height}%`
+    grid.appendChild(cell)
+    cellsArray.push(cell)
   }
 }
-rowStartCells.pop()
-
-rowStartCells.forEach((cell, index) => {
-  rows[index] = []
-  for (let i = 0; i < width -2; i++) {
-    rows[index].push(Number(cellsArray[cell + i].id))
-  }
-})
 
 // ! **************************
 
@@ -84,11 +68,11 @@ function addShape() {
   const randomShape = shapeArrays[randomShapeKey]
   activeShapeCoords = randomShape
   shapeMoving = true
-  
-  randomShape.forEach(element => {
-    intervalTime = 400
-    cellsArray[element].classList.add('shape')        
-    cellsArray[element].classList.add('active-shape')  
+  intervalTime = 400
+  randomShape.forEach(coord => {
+    const shape = document.getElementById(coord)
+    shape.classList.add('shape')        
+    shape.classList.add('active-shape')  
   })
 }
 
@@ -99,16 +83,19 @@ function startGame() {
 
 function checkCollision() {
   hasCollision = false
-  activeShapeCoords.forEach(num => {
-    if(floorCells.includes(num + width) || inactiveCells.includes(num + width)) {
+  activeShapeCoords.forEach(coord => {
+    const x = Number(coord.toString().split('-')[1])
+    const y = Number(coord.toString().split('-')[0])
+    if (y === height - 1 || inactiveCells.includes(`${y + 1}-${x}`)) {
       shapeMoving = false
       hasCollision = true
     }
   })
   if (hasCollision) {
-    activeShapeCoords.forEach(element => {
-      cellsArray[element].classList.remove('active-shape')
-      cellsArray[element].classList.add('inactive-shape')
+    activeShapeCoords.forEach(coord => {
+      const shape = document.getElementById(coord)
+      shape.classList.remove('active-shape')
+      shape.classList.add('inactive-shape')
     })
     inactiveCells.push(activeShapeCoords)
     inactiveCells = inactiveCells.flat()
@@ -119,27 +106,33 @@ function checkCollision() {
 function checkShapeMove() {
   ableToMoveLeft = true
   ableToMoveRight = true
-  activeShapeCoords.forEach(num => {
-    if(wallCells.includes(num -= 1) || inactiveCells.includes(num -= 1)) {
+  activeShapeCoords.forEach(coord => {
+    const x = Number(coord.toString().split('-')[1])
+    const y = Number(coord.toString().split('-')[0])
+    if (x === 0 || inactiveCells.includes(`${y}-${x - 1}`)) {
       ableToMoveLeft = false
-    } else if ((wallCells.includes(num += 3) || inactiveCells.includes(num += 1))) {
+    } else if (x === width - 1 || inactiveCells.includes(`${y}-${x + 1}`)) {
       ableToMoveRight = false
     }
   })
 }
 
-function moveShape(numToMove) {
+function moveShape(move, direction) {
   newCoords = []
-    activeShapeCoords.forEach(num => {
-      cellsArray[num].classList.remove('active-shape')
-      newCoords.push(num += numToMove)
-    })
-    activeShapeCoords = newCoords
-    activeShapeCoords.forEach(num => {
-      cellsArray[num].classList.add('active-shape')
-      // checkShapeMove()
-      // checkCollision()
-    })
+  activeShapeCoords.forEach(coord => {
+    document.getElementById(coord).classList.remove('active-shape')
+    const y = Number(coord.toString().split('-')[0])
+    const x = Number(coord.toString().split('-')[1])
+    if (direction === 'vertical') {
+      newCoords.push(`${y + move}-${x}`)
+    } else if (direction === 'horizontal') {
+      newCoords.push(`${y}-${x + move}`)
+    }
+  })
+  activeShapeCoords = newCoords
+  activeShapeCoords.forEach(coord => {
+    document.getElementById(coord).classList.add('active-shape')
+  })
 }
 
 function rotateShape() {
@@ -148,29 +141,33 @@ function rotateShape() {
 
 
 function clearRow() {
-  const rowsArray = Object.values(rows)
-  rowsArray.forEach(row => {
-    const rowFull = row.every(cell => cellsArray[cell].classList.contains('inactive-shape'))
-    if (rowFull) {
-      row.forEach(cell => {
-        cellsArray[cell].classList.remove('inactive-shape')
-        inactiveCells = inactiveCells.filter(cellId => cellId !== cell)
+  let rowCounts = {}
+  const yCoords = inactiveCells.map(coord => coord.split('-')[0])
+  yCoords.forEach(num => rowCounts[num] = (rowCounts[num] || 0) + 1)
+  for (const key in rowCounts) {
+    if (rowCounts[key] === width) {
+      for (let i = 0; i < width; i++) {
+        document.getElementById(`${key}-${i}`).classList.remove('inactive-shape')
+      }
+      inactiveCells = inactiveCells.filter(coord => {
+        const y = Number(coord.split('-')[0])
+        return y !== Number(key)
       })
       let oldCells = []
       let newCells = []
-      inactiveCells = inactiveCells.map(cell => {
-        if (cell >= row[0]) return cell
-        else {
-          oldCells.push(cell)
-          newCells.push(cell + width)
-          return cell + width
-        }
+      inactiveCells = inactiveCells.map(coord => {
+        const y = Number(coord.split('-')[0])
+        const x = Number(coord.split('-')[1])
+        if (y < key) {
+          oldCells.push(coord)
+          newCells.push(`${y + 1}-${x}`)
+          return `${y + 1}-${x}`
+        } else return coord
       })
-      oldCells.forEach(cell => cellsArray[cell].classList.remove('inactive-shape'))
-      newCells.forEach(cell => cellsArray[cell].classList.add('inactive-shape'))
+      oldCells.forEach(cell => document.getElementById(cell).classList.remove('inactive-shape'))
+      newCells.forEach(cell => document.getElementById(cell).classList.add('inactive-shape'))
     }
-    //  to remove duplicates from an array > array = [...new Set(array)]
-  })
+  }
 }
 
 function resetGame() {
@@ -202,13 +199,6 @@ function gameOver() {
 // ! **************************
 
 // ! ************ SET INTERVALS **************
-// const shapeMovementInterval = setInterval(() => {
-//   if(shapeMoving) {  
-//     moveShape(width)
-//   }
-//   checkShapeMove()
-//   checkCollision()
-// }, 200);
 const shapeMovementInterval = setInterval(() => {
   checkShapeMove()
   checkCollision()
@@ -216,7 +206,7 @@ const shapeMovementInterval = setInterval(() => {
 
 function shapeMovementTimeout() {
   if (shapeMoving) {
-    moveShape(width)
+    moveShape(1, 'vertical')
   }
   checkShapeMove()
   checkCollision()
@@ -256,12 +246,12 @@ document.addEventListener('keydown', (event) => {
   const key = event.key
 
   if (key === 'a' && !hasCollision && ableToMoveLeft && gameActive) {
-     moveShape(-1)
+     moveShape(-1, 'horizontal')
   } else if (key === 's' && !hasCollision && gameActive) {
     intervalTime = 55
     // console.log('im fast as fuck boiiii!');
   } else if (key === 'd' && !hasCollision && ableToMoveRight && gameActive) {
-    moveShape(1)
+    moveShape(1, 'horizontal')
   }
 })
 document.addEventListener('keyup', (event) => {
