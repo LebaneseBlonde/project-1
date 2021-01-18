@@ -169,7 +169,7 @@ function clearRow() {
       oldCells.forEach(cell => cellsArray[cell].classList.remove('inactive-shape'))
       newCells.forEach(cell => cellsArray[cell].classList.add('inactive-shape'))
     }
-    //  to remove duplicates from an array > array = [...new Set(array)]
+    //  to remove duplicates from an array = [...new Set(array)]
   })
 }
 
