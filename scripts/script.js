@@ -134,20 +134,27 @@ function moveShape(move, direction) {
 }
 
 function rotateShape() {
-  const x = Number(coord.toString().split('-')[1])
-  const y = Number(coord.toString().split('-')[0])
-  const pivotIndex = 1
-  const pivotCoord = activeShapeCoords[pivotIndex]
-  // The equation for a 90 deg. rotation is (x,y) -> (y,-x).
-  for(let i = 0; i < activeShapeCoords.length; i++) {
-    const relativeX = activeShapeCoords[i].x - pivotIndex.x
-    const relativeY = activeShapeCoords[i].y - pivotIndex.y
+  let newCoords = []
+  activeShapeCoords.forEach((coord, index) => {
+    document.getElementById(coord).classList.remove('active-shape')
+    let x = Number(coord.toString().split('-')[1])
+    let y = Number(coord.toString().split('-')[0])
+    const pivotIndex = 1
+    const pivotX = Number(activeShapeCoords[pivotIndex].toString().split('-')[1])
+    const pivotY = Number(activeShapeCoords[pivotIndex].toString().split('-')[0])
+    const relativeX = x - pivotX
+    const relativeY = y - pivotY
     const rotatedX = relativeY
     const rotatedY = -relativeX
-    activeShapeCoords[i].x = pivot.x + rotatedX
-    activeShapeCoords[i].y = pivot.y + rotatedY
-
-  }
+    x = pivotX + rotatedX
+    y = pivotY + rotatedY
+    newCoords.push(`${y}-${x}`)
+  }) 
+  activeShapeCoords = newCoords
+  activeShapeCoords.forEach(coord => {
+    document.getElementById(coord).classList.add('active-shape')
+  })
+  
 } 
 
 function clearRow() {
