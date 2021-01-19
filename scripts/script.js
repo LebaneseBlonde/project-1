@@ -14,15 +14,14 @@ let gameActive = 0
 let currentSpeed = 400
 let intervalTime = currentSpeed
 // ? object with arrays of shapes starting coords
-const shapeArrays = {
-  squareShape: ['0_4', '0_5', '1_4', '1_5'],
-  lineShape: ['0_3', '0_4', '0_5', '0_6'],
-  l1Shape: ['0_3', '0_4', '0_5', '1_5'],
-  l2Shape: ['0_3', '0_4', '0_5', '1_3'],
-  tShape: ['0_4', '0_5', '0_6', '1_5'],
-  s1Shape: ['0_4', '0_5', '1_3', '1_4'],
-  s2Shape: ['0_4', '0_5', '1_5', '1_6']
-}
+const iTet = { coords: ['0_3', '0_4', '0_5', '0_6'], background: ['images/i1.png', 'images/i2.png', 'images/i3.png', 'images/i4.png'], pivot: 1 }
+const jTet = { coords: ['0_4', '1_4', '1_5', '1_6'], background: ['images/j1.png', 'images/j2.png', 'images/j3.png', 'images/j4.png'], pivot: 2 }
+const lTet = { coords: ['0_5', '1_3', '1_4', '1_5'], background: ['images/l1.png', 'images/l2.png', 'images/l3.png', 'images/l4.png'], pivot: 2 }
+const oTet = { coords: ['0_4', '0_5', '1_4', '1_5'], background: ['images/o1.png', 'images/o2.png', 'images/o3.png', 'images/o4.png'], pivot: 1 }
+const sTet = { coords: ['0_4', '0_5', '1_3', '1_4'], background: ['images/s1.png', 'images/s2.png', 'images/s3.png', 'images/s4.png'], pivot: 3 }
+const tTet = { coords: ['0_4', '1_3', '1_4', '1_5'], background: ['images/t1.png', 'images/t2.png', 'images/t3.png', 'images/t4.png'], pivot: 2 }
+const zTet = { coords: ['0_4', '0_5', '1_5', '1_6'], background: ['images/z1.png', 'images/z2.png', 'images/z3.png', 'images/z4.png'], pivot: 2 }
+let randomShape = {}
 let activeShapeCoords = []
 // ?  dom variables
 const grid = document.querySelector('.grid')
@@ -45,7 +44,7 @@ for (let row = 0; row < height; row++) {
     cell.classList.add('cells')
     cell.setAttribute('row', row)
     cell.setAttribute('column', column)
-    cell.innerHTML = `${row}_${column}`
+    // cell.innerHTML = `${row}_${column}`
     cell.id = `${row}_${column}`
     cell.style.width = `${100 / width}%`
     cell.style.height = `${100 / height}%`
@@ -56,21 +55,26 @@ for (let row = 0; row < height; row++) {
 
 // ! **************************
 
-
 // ! ************ FUNCTIONS **************
 function addShape() {
-  // ? below selects random shape from object and inserts into onto the grid
+  // ? below selects random shape
   gameActive++
-  const shapeKeys = Object.keys(shapeArrays)
-  const randomShapeIndex = Math.floor(Math.random() * shapeKeys.length) 
-  const randomShapeKey = shapeKeys[randomShapeIndex] 
-  const randomShape = shapeArrays[randomShapeKey]
-  activeShapeCoords = randomShape
+  intervalTime = currentSpeed
+  // const shapesArray = [iTet, jTet, lTet, oTet, sTet, tTet, zTet]
+  const shapesArray = [iTet]
+  const randomShapeIndex = Math.floor(Math.random() * shapesArray.length) 
+  randomShape = shapesArray[randomShapeIndex]
+  
+  // ? below adds the background images to the cells
+  randomShape.coords.forEach((coord, index) => {
+    const coordBG = document.getElementById(coord)
+    coordBG.style.backgroundImage = `url('${randomShape.background[index]}')`
+  })
+
+  activeShapeCoords = randomShape.coords
   shapeMoving = true
-  intervalTime = 400
-  randomShape.forEach(coord => {
+  activeShapeCoords.forEach(coord => {
     const shape = document.getElementById(coord)
-    shape.classList.add('shape')        
     shape.classList.add('active-shape')  
   })
 }
@@ -115,7 +119,10 @@ function checkShapeMove() {
 function moveShape(move, direction) {
   let newCoords = []
   activeShapeCoords.forEach(coord => {
-    document.getElementById(coord).classList.remove('active-shape')
+    const coordBG = document.getElementById(coord)
+    coordBG.classList.remove('active-shape')
+    coordBG.style.backgroundImage = ''
+
     const y = Number(coord.toString().split('_')[0])
     const x = Number(coord.toString().split('_')[1])
     if (direction === 'vertical') {
@@ -125,8 +132,10 @@ function moveShape(move, direction) {
     }
   })
   activeShapeCoords = newCoords
-  activeShapeCoords.forEach(coord => {
-    document.getElementById(coord).classList.add('active-shape')
+  activeShapeCoords.forEach((coord, index) => {
+    const coordBG = document.getElementById(coord)
+    coordBG.classList.add('active-shape')
+    coordBG.style.backgroundImage = `url('${randomShape.background[index]}')`
   })
 }
 
@@ -134,7 +143,9 @@ function rotateShape() {
   let newCoords = []
   let newCoords2 = []
   activeShapeCoords.forEach((coord, index) => {
-    document.getElementById(coord).classList.remove('active-shape')
+    const coordBG = document.getElementById(coord)
+    coordBG.classList.remove('active-shape')
+    coordBG.style.backgroundImage = ''
     let x = Number(coord.toString().split('_')[1])
     let y = Number(coord.toString().split('_')[0])
     const pivotIndex = 1
@@ -194,8 +205,11 @@ function rotateShape() {
     }
   })
   activeShapeCoords = newCoords
-  activeShapeCoords.forEach(coord => {
-    document.getElementById(coord).classList.add('active-shape')
+  activeShapeCoords.forEach((coord, index) => {
+    const coordBG = document.getElementById(coord)
+    coordBG.classList.add('active-shape')
+    coordBG.style.backgroundImage = `url('${randomShape.background[index]}')`
+    coordBG.style.transform = 'rotate(-90deg)'
   })
   
 } 
@@ -274,10 +288,13 @@ function shapeMovementTimeout() {
   }
   if (rowsCleared === 10) { 
     intervalTime = 325
+    currentSpeed = intervalTime
   } else if (rowsCleared === 20) {
     intervalTime = 225
+    currentSpeed = intervalTime
   } else if (rowsCleared === 30) {
     intervalTime = 175
+    currentSpeed = intervalTime
   }
   checkShapeMove()
   checkCollision()

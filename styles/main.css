@@ -11,6 +11,10 @@ body {
   margin: 0
 }
 
+div {
+  background-size: cover;
+}
+
 .grid {
   display: flex;
   flex-direction: row;
