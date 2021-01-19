@@ -134,23 +134,24 @@ function moveShape(move, direction) {
   })
 }
 
-function checkShapeRotate() {
-  ableToRotate = true
-  activeShapeCoords.forEach(coord => {
-    const x = Number(coord.toString().split('-')[1])
-    const y = Number(coord.toString().split('-')[0])
-    if (x === 0 || x === width - 1 || inactiveCells.includes(`${y}-${x - 1}`)) {
-      ableToRotate = false
-      return false
-    } else {
-      ableToRotate = true
-      return true
-    }
-  })
-}
+// function checkShapeRotate() {
+//   ableToRotate = true
+//   activeShapeCoords.forEach(coord => {
+//     const x = Number(coord.toString().split('-')[1])
+//     const y = Number(coord.toString().split('-')[0])
+//     if (x === 0 || x === width - 1 || inactiveCells.includes(`${y}-${x - 1}`)) {
+//       ableToRotate = false
+//       return false
+//     } else {
+//       ableToRotate = true
+//       return true
+//     }
+//   })
+// }
 
 function rotateShape() {
   let newCoords = []
+  let newCoords2 = []
   activeShapeCoords.forEach((coord, index) => {
     document.getElementById(coord).classList.remove('active-shape')
     let x = Number(coord.toString().split('-')[1])
@@ -166,6 +167,36 @@ function rotateShape() {
     y = pivotY + rotatedY
     newCoords.push(`${y}-${x}`)
   }) 
+  // ? stops shapes rotating outside the grid on the x axis
+  newCoords.forEach((coord) => {
+    let x = Number(coord.toString().split('-')[1])
+    let y = Number(coord.toString().split('-')[0])
+    if (x > width -1) {
+      newCoords2 = newCoords
+      newCoords = []
+      newCoords2.forEach(coord2 => {
+        let x = Number(coord2.toString().split('-')[1])
+        let y = Number(coord2.toString().split('-')[0])
+        x--
+        newCoords.push(`${y}-${x}`)
+      })
+    }
+  })
+  // ? stops shapes rotating outside the grid on the y axis
+  newCoords.forEach((coord) => {
+    let x = Number(coord.toString().split('-')[1])
+    let y = Number(coord.toString().split('-')[0])
+    if (y < 1) {
+      newCoords2 = newCoords
+      newCoords = []
+      newCoords2.forEach(coord2 => {
+        let x = Number(coord2.toString().split('-')[1])
+        let y = Number(coord2.toString().split('-')[0])
+        y++
+        newCoords.push(`${y}-${x}`)
+      })
+    }
+  })
   activeShapeCoords = newCoords
   activeShapeCoords.forEach(coord => {
     document.getElementById(coord).classList.add('active-shape')
