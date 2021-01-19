@@ -8,7 +8,6 @@ let score = 0
 let shapeMoving = false
 let ableToMoveLeft = true
 let ableToMoveRight = true
-let ableToRotate = true
 let hasCollision = false
 let inactiveCells = []
 let gameActive = 0
@@ -23,14 +22,6 @@ const shapeArrays = {
   s1Shape: ['0-4', '0-5', '1-3', '1-4'],
   s2Shape: ['0-4', '0-5', '1-5', '1-6']
 }
-// const shapePivotIndex = {
-//   squareShape: 1,
-//   lineShape: 1,
-//   l1Shape: 1,
-//   l2Shape: 1,
-//   s1Shape: 1,
-//   s2Shape: 1
-// }
 let activeShapeCoords = []
 // ?  dom variables
 const grid = document.querySelector('.grid')
@@ -133,21 +124,6 @@ function moveShape(move, direction) {
     document.getElementById(coord).classList.add('active-shape')
   })
 }
-
-// function checkShapeRotate() {
-//   ableToRotate = true
-//   activeShapeCoords.forEach(coord => {
-//     const x = Number(coord.toString().split('-')[1])
-//     const y = Number(coord.toString().split('-')[0])
-//     if (x === 0 || x === width - 1 || inactiveCells.includes(`${y}-${x - 1}`)) {
-//       ableToRotate = false
-//       return false
-//     } else {
-//       ableToRotate = true
-//       return true
-//     }
-//   })
-// }
 
 function rotateShape() {
   let newCoords = []
@@ -307,7 +283,6 @@ document.addEventListener('keydown', (event) => {
   checkShapeMove()
   checkCollision()
   const key = event.key
-
   if (key === 'a' && !hasCollision && ableToMoveLeft && gameActive && shapeMoving) {
      moveShape(-1, 'horizontal')
   } else if (key === 's' && !hasCollision && gameActive && shapeMoving) {
@@ -317,11 +292,12 @@ document.addEventListener('keydown', (event) => {
     moveShape(1, 'horizontal')
   }
 })
+
 document.addEventListener('keyup', (event) => {
   const key = event.key
   if (key === 's' && !hasCollision && gameActive ) {
     intervalTime = 400
-  } else if (key === 'w' && !hasCollision && ableToRotate && gameActive && shapeMoving) {
+  } else if (key === 'w' && !hasCollision && gameActive && shapeMoving) {
     rotateShape()
   }
 })
