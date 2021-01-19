@@ -8,6 +8,7 @@ let score = 0
 let shapeMoving = false
 let ableToMoveLeft = true
 let ableToMoveRight = true
+let ableToRotate = true
 let hasCollision = false
 let inactiveCells = []
 let gameActive = 0
@@ -130,6 +131,21 @@ function moveShape(move, direction) {
   activeShapeCoords = newCoords
   activeShapeCoords.forEach(coord => {
     document.getElementById(coord).classList.add('active-shape')
+  })
+}
+
+function checkShapeRotate() {
+  ableToRotate = true
+  activeShapeCoords.forEach(coord => {
+    const x = Number(coord.toString().split('-')[1])
+    const y = Number(coord.toString().split('-')[0])
+    if (x === 0 || x === width - 1 || inactiveCells.includes(`${y}-${x - 1}`)) {
+      ableToRotate = false
+      return false
+    } else {
+      ableToRotate = true
+      return true
+    }
   })
 }
 
@@ -261,21 +277,20 @@ document.addEventListener('keydown', (event) => {
   checkCollision()
   const key = event.key
 
-  if (key === 'a' && !hasCollision && ableToMoveLeft && gameActive) {
+  if (key === 'a' && !hasCollision && ableToMoveLeft && gameActive && shapeMoving) {
      moveShape(-1, 'horizontal')
-  } else if (key === 's' && !hasCollision && gameActive) {
+  } else if (key === 's' && !hasCollision && gameActive && shapeMoving) {
     intervalTime = 55
     // console.log('im fast as fuck boiiii!');
-  } else if (key === 'd' && !hasCollision && ableToMoveRight && gameActive) {
+  } else if (key === 'd' && !hasCollision && ableToMoveRight && gameActive && shapeMoving) {
     moveShape(1, 'horizontal')
   }
 })
 document.addEventListener('keyup', (event) => {
   const key = event.key
-  if (key === 's' && !hasCollision && gameActive) {
+  if (key === 's' && !hasCollision && gameActive ) {
     intervalTime = 400
-  } else if (key === 'w' && !hasCollision && gameActive) {
-    console.log('rotate');
+  } else if (key === 'w' && !hasCollision && ableToRotate && gameActive && shapeMoving) {
     rotateShape()
   }
 })
