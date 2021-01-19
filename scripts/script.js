@@ -22,6 +22,14 @@ const shapeArrays = {
   s1Shape: ['0-4', '0-5', '1-3', '1-4'],
   s2Shape: ['0-4', '0-5', '1-5', '1-6']
 }
+// const shapePivotIndex = {
+//   squareShape: 1,
+//   lineShape: 1,
+//   l1Shape: 1,
+//   l2Shape: 1,
+//   s1Shape: 1,
+//   s2Shape: 1
+// }
 let activeShapeCoords = []
 // ?  dom variables
 const grid = document.querySelector('.grid')
@@ -126,7 +134,20 @@ function moveShape(move, direction) {
 }
 
 function rotateShape() {
-  
+  const x = Number(coord.toString().split('-')[1])
+  const y = Number(coord.toString().split('-')[0])
+  const pivotIndex = 1
+  const pivotCoord = activeShapeCoords[pivotIndex]
+  // The equation for a 90 deg. rotation is (x,y) -> (y,-x).
+  for(let i = 0; i < activeShapeCoords.length; i++) {
+    const relativeX = activeShapeCoords[i].x - pivotIndex.x
+    const relativeY = activeShapeCoords[i].y - pivotIndex.y
+    const rotatedX = relativeY
+    const rotatedY = -relativeX
+    activeShapeCoords[i].x = pivot.x + rotatedX
+    activeShapeCoords[i].y = pivot.y + rotatedY
+
+  }
 } 
 
 function clearRow() {
