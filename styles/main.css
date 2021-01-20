@@ -7,7 +7,7 @@
 
 * {
   box-sizing: border-box;
-  color: white;
+  
 }
 
 body {
@@ -16,7 +16,8 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin: 0
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 div {
@@ -28,12 +29,16 @@ h1, h2 {
   color: white;
 }
 
-aside {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 10px solid #f0f0f0;
-  border-radius: 10px;
+h1 {
+text-shadow: 
+  1px 1px 1px #CBCBCB,
+  1px 2px 1px #CBCBCB,
+  1px 3px 1px #CBCBCB,
+  1px 4px 1px #CBCBCB,
+  0px 0px 0px rgba(16,16,16,0.4),
+  0px 0px 0px rgba(16,16,16,0.2),
+  0px 0px 0px rgba(16,16,16,0.2),
+  0px 0px 0px rgba(16,16,16,0.4);
 }
 
 .grid {
@@ -53,7 +58,6 @@ aside {
 }
 
 .grid-container {
-  /* position: absolute; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -73,7 +77,7 @@ aside {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* z-index: 1; */
+  color: white;
 }
 
 .cells {
@@ -82,15 +86,41 @@ aside {
   border-radius: 2px;
 }
 
-.score-box {
-  padding: 10px;
-  margin: 10px;
-  background-color: white;
+.leaderboard {
+  background-color: #8d190f;
+  box-shadow: inset 8px 8px 0px 0px #61110a;
+  padding: 20px;
+  border-radius: 10px;
+}
 
+.grid-left, .grid-right {
+  color: #C82515;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.grid-left-buttons, .grid-right-scores {
+  display: none;
+}
+
+.grid-left-buttons {
+  position: absolute;
+  margin-bottom: 100px;
+}
+
+.grid-left-buttons p{
+  cursor: pointer;
+}
+
+.grid-right-scores {
+  position: absolute;
+  margin-bottom: 100px;
+  margin-left: 80px;
 }
 
 .start-screen {
-  /* background-color: white; */
   /* display: none; */
 }
 
@@ -98,16 +128,25 @@ aside {
   display: none;
 }
 
+.gameover-screen {
+  display: none;
+}
+
 .logo {
   width: 200px;
   margin-top: 20px;
+  filter: drop-shadow(3px 3px 1px #CBCBCB);
 }
 
 .side-art {
   width: 200px;
+  margin-top: 100px;
 }
-.side-art:first-child {
-  margin-right: 4.8px;
+.grid-left .side-art {
+  /* margin-right: 4.8px; */
+  margin-top: 100px;
+    /* margin-left: 0px; */
+  margin-right: 5px;
 }
 .side-art:last-child {
   margin-left: 15px;

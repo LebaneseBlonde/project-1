@@ -5,6 +5,7 @@ const height = 20
 let cellsArray = []
 let rowsCleared = 0
 let score = 0
+let level = 0
 let shapeMoving = false
 let ableToMoveLeft = true
 let ableToMoveRight = true
@@ -32,8 +33,10 @@ const pauseButton = document.querySelector('.pause-button')
 const resetButton = document.querySelector('.reset-button')
 const scoreDisplay = document.getElementById('score-num')
 const linesDisplay = document.getElementById('lines-num')
-// scoreDisplay.innerHTML = score
-// linesDisplay.innerHTML = rowsCleared
+const levelDisplay = document.getElementById('level-num')
+const gridLeft = document.querySelector('.grid-left-buttons')
+const gridRight = document.querySelector('.grid-right-scores')
+const gameoverScreen = document.querySelector('.gameover-screen')
 // ! **************************
 
 
@@ -263,26 +266,34 @@ function clearRow() {
 }
 
 function resetGame() {
-    shapeMoving = false
-    gameActive = 0
-    inactiveCells = []
-    rowsCleared = 0
-    score = 0
-  pauseButton.innerHTML = '&#9646;&#9646;'
-    cellsArray.forEach(cell => {
-      cell.classList.remove('shape')
-      cell.classList.remove('active-shape')
-      cell.classList.remove('inactive-shape')
-      cell.style.backgroundImage = ''
-      rotation = 0
-    })
+  shapeMoving = false
+  gameActive = 0
+  inactiveCells = []
+  rowsCleared = 0
+  score = 0
+  level = 0
+
+  pauseButton.innerHTML = 'Pause'
+  scoreDisplay.innerHTML = score
+  linesDisplay.innerHTML = rowsCleared
+  levelDisplay.innerHTML = level
+
+
+  cellsArray.forEach(cell => {
+    cell.classList.remove('shape')
+    cell.classList.remove('active-shape')
+    cell.classList.remove('inactive-shape')
+    cell.style.backgroundImage = ''
+    rotation = 0
+  })
 }
 
 
 function gameOver() {
   inactiveCells.forEach(coord => {
     const y = Number(coord.toString().split('_')[0])
-    if (y === 0) {
+    if (y <= 0) {
+      gameoverScreen.style.display = 'block'
       shapeMoving = false
       ableToMoveLeft = false
       ableToMoveRight = false
@@ -297,6 +308,7 @@ function gameOver() {
 function shapeMovementTimeout() {
   if (shapeMoving) {
     moveShape(1, 'vertical')
+    console.log(inactiveCells)
   }
   if (intervalTime === 50) {
     score++
@@ -305,12 +317,15 @@ function shapeMovementTimeout() {
   if (rowsCleared === 10) { 
     intervalTime = 325
     currentSpeed = intervalTime
+    level++
   } else if (rowsCleared === 20) {
     intervalTime = 225
     currentSpeed = intervalTime
+    level++
   } else if (rowsCleared === 30) {
     intervalTime = 175
     currentSpeed = intervalTime
+    level++
   }
   checkShapeMove()
   checkCollision()
@@ -324,6 +339,9 @@ shapeMovementTimeout()
 startButton.addEventListener('click', () => {
   if (gameActive) return 
   startScreen.style.display = 'none'
+  gridLeft.style.display = 'block'
+  gridRight.style.display = 'block'
+
   setTimeout(addShape, 1000)
 }) 
 
@@ -332,18 +350,19 @@ pauseButton.addEventListener('click', () => {
     shapeMoving = false
     ableToMoveLeft = false
     ableToMoveRight = false
-    pauseButton.innerHTML = '&#9654;'
+    pauseButton.innerHTML = 'Resume'
   } else if (!shapeMoving && gameActive) {
     shapeMoving = true
     ableToMoveLeft = true
     ableToMoveRight = false
-    pauseButton.innerHTML = '&#9646;&#9646;'
+    pauseButton.innerHTML = 'Pause'
   }
 }) 
 
 resetButton.addEventListener('click', () => {
   if(gameActive) {
     resetGame()
+    setTimeout(addShape, 1000)
   }
 })
 
