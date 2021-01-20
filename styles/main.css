@@ -16,32 +16,16 @@ div {
 }
 
 .grid {
+  background: lightgrey;
   display: flex;
   flex-direction: row;
-  border: 1px solid grey;
+  border: 1px solid lightgrey;
   width: 350px;
   height: 700px;
   flex-wrap: wrap;
 }
 
 .cells {
-  border: 1px solid grey;
-  font-size: 15px;
-}
-
-.walls {
-  background-color: lightgrey;
-}
-
-.active-shape {
-  background-color: lightblue;
-  /* transition: 100ms ease-in; */
-}
-
-.inactive-shape {
-  background-color: lightgreen;
-}
-
-.row-start-cell {
-  color: red;
+  border: 1px solid lightgrey;
+  background-color: #fff;
 }

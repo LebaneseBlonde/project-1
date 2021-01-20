@@ -13,6 +13,7 @@ let inactiveCells = []
 let gameActive = 0
 let currentSpeed = 400
 let intervalTime = currentSpeed
+let rotation = 0
 // ? object with arrays of shapes starting coords
 const iTet = { coords: ['0_3', '0_4', '0_5', '0_6'], background: ['images/i1.png', 'images/i2.png', 'images/i3.png', 'images/i4.png'], pivot: 1 }
 const jTet = { coords: ['0_4', '1_4', '1_5', '1_6'], background: ['images/j1.png', 'images/j2.png', 'images/j3.png', 'images/j4.png'], pivot: 2 }
@@ -60,8 +61,9 @@ function addShape() {
   // ? below selects random shape
   gameActive++
   intervalTime = currentSpeed
-  // const shapesArray = [iTet, jTet, lTet, oTet, sTet, tTet, zTet]
-  const shapesArray = [iTet]
+  rotation = 0
+  const shapesArray = [iTet, jTet, lTet, oTet, sTet, tTet, zTet]
+  // const shapesArray = [iTet]
   const randomShapeIndex = Math.floor(Math.random() * shapesArray.length) 
   randomShape = shapesArray[randomShapeIndex]
   
@@ -136,10 +138,12 @@ function moveShape(move, direction) {
     const coordBG = document.getElementById(coord)
     coordBG.classList.add('active-shape')
     coordBG.style.backgroundImage = `url('${randomShape.background[index]}')`
+    coordBG.style.transform = `rotate(${rotation}deg)`
   })
 }
 
 function rotateShape() {
+  rotation = rotation === -270 ? 0 : rotation - 90
   let newCoords = []
   let newCoords2 = []
   activeShapeCoords.forEach((coord, index) => {
@@ -205,11 +209,12 @@ function rotateShape() {
     }
   })
   activeShapeCoords = newCoords
+
   activeShapeCoords.forEach((coord, index) => {
     const coordBG = document.getElementById(coord)
     coordBG.classList.add('active-shape')
     coordBG.style.backgroundImage = `url('${randomShape.background[index]}')`
-    coordBG.style.transform = 'rotate(-90deg)'
+    coordBG.style.transform = `rotate(${rotation}deg)`
   })
   
 } 
@@ -226,6 +231,7 @@ function clearRow() {
       linesDisplay.innerHTML = rowsCleared
       for (let i = 0; i < width; i++) {
         document.getElementById(`${key}_${i}`).classList.remove('inactive-shape')
+        document.getElementById(`${key}_${i}`).style.backgroundImage = ''
       }
       inactiveCells = inactiveCells.filter(coord => {
         const y = Number(coord.split('_')[0])
@@ -238,12 +244,18 @@ function clearRow() {
         const x = Number(coord.split('_')[1])
         if (y < key) {
           oldCells.push(coord)
-          newCells.push(`${y + 1}_${x}`)
+          newCells.push({ coord: `${y + 1}_${x}`, image: document.getElementById(coord).style.backgroundImage })
           return `${y + 1}_${x}`
         } else return coord
       })
-      oldCells.forEach(cell => document.getElementById(cell).classList.remove('inactive-shape'))
-      newCells.forEach(cell => document.getElementById(cell).classList.add('inactive-shape'))
+      oldCells.forEach(cell => {
+        document.getElementById(cell).classList.remove('inactive-shape')
+        document.getElementById(cell).style.backgroundImage = ''
+      })
+      newCells.forEach(cell => {
+        document.getElementById(cell.coord).classList.add('inactive-shape')
+        document.getElementById(cell.coord).style.backgroundImage = cell.image
+      })
     }
   }
 }
