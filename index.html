@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- <link rel="stylesheet" href="styles/normalize.css"> -->
+  <link rel="stylesheet" href="styles/normalize.css">
   <link rel="stylesheet" href="styles/main.css">
   <script defer src="scripts/script.js"></script>
   <title>Tetris</title>
@@ -11,17 +11,64 @@
 <body>
   <main>
     <div class="game-box">
-      <div class="grid"></div>
-      <div class="buttons">
-        <button class="start-button button">Start</button>
-        <button class="pause-button button">Pause</button>
-        <button class="reset-button button">Reset</button>
-      </div>
-      <div class="score-box">
-        <p class="score">Score: <span id="score-num"></span></p>
-        <p class="lines">Lines cleared: <span id="lines-num"></span></p>
+      <div class="grid-container">
+        <div class="grid-left">
+          <div class="grid-left-buttons">
+            <p class="pause-button button">Pause</p>
+            <p class="reset-button button">Restart</p>
+            <p class="settings-button button">Settings</p>
+          </div>
+          <img class="side-art" src="images/side1.png">
+        </div>
+        <div class="grid"></div>
+        <div class="grid-right">
+          <div class="grid-right-scores">
+            <p class="score">Score: <span id="score-num">0</span></p>
+            <p class="lines">Lines cleared: <span id="lines-num">0</span></p>
+            <p class="level">Level: <span id="level-num">0</span></p>
+          </div>
+          <img class="side-art" src="images/side2.png">
+        </div>
       </div>
     </div>
   </main>
+  <div class="modal start-screen">
+    <div class="grid modal-start">
+      <img class="logo" src="images/olympic_logo.png">
+      <h1>Olypmic Tetris</h1>
+      <div class="start-screen-buttons">
+        <button class="start-button button">PLAY</button>
+      </div>
+      <div class="leaderboard">
+        <h2>leaderboard</h2>
+        <ol>
+          <li>Cal 1000</li>
+          <li>Cal 1000</li>
+          <li>Cal 1000</li>
+          <li>Cal 1000</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="modal pause-screen"></div>
+  <div class="modal gameover-screen">
+    <div class="grid modal-gameover">
+      <img class="logo" src="images/olympic_logo.png">
+      <h1>Game Over</h1>
+      <p>You scored: <span id="gameover-score"></span></p>
+      <div class="gameover-screen-buttons">
+        <button class="new-game-button button">NEW GAME</button>
+      </div>
+      <div class="leaderboard">
+        <h2>leaderboard</h2>
+        <ol>
+          <li>Cal 1000</li>
+          <li>Cal 1000</li>
+          <li>Cal 1000</li>
+          <li>Cal 1000</li>
+        </ol>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

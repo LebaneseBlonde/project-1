@@ -5,6 +5,7 @@ const height = 20
 let cellsArray = []
 let rowsCleared = 0
 let score = 0
+let level = 0
 let shapeMoving = false
 let ableToMoveLeft = true
 let ableToMoveRight = true
@@ -26,13 +27,18 @@ let randomShape = {}
 let activeShapeCoords = []
 // ?  dom variables
 const grid = document.querySelector('.grid')
+const startScreen = document.querySelector('.start-screen')
+const gameoverScreen = document.querySelector('.gameover-screen')
 const startButton = document.querySelector('.start-button')
 const pauseButton = document.querySelector('.pause-button')
 const resetButton = document.querySelector('.reset-button')
+const newGameButton = document.querySelector('.new-game-button')
 const scoreDisplay = document.getElementById('score-num')
+const gameOverScoreDisplay = document.getElementById('gameover-score')
 const linesDisplay = document.getElementById('lines-num')
-scoreDisplay.innerHTML = score
-linesDisplay.innerHTML = rowsCleared
+const levelDisplay = document.getElementById('level-num')
+const gridLeft = document.querySelector('.grid-left-buttons')
+const gridRight = document.querySelector('.grid-right-scores')
 // ! **************************
 
 
@@ -59,6 +65,7 @@ for (let row = 0; row < height; row++) {
 // ! ************ FUNCTIONS **************
 function addShape() {
   // ? below selects random shape
+  gameOver()
   gameActive++
   intervalTime = currentSpeed
   rotation = 0
@@ -82,7 +89,6 @@ function addShape() {
 }
 
 function checkCollision() {
-  gameOver()
   hasCollision = false
   activeShapeCoords.forEach(coord => {
     const y = Number(coord.toString().split('_')[0])
@@ -119,6 +125,7 @@ function checkShapeMove() {
 }
 
 function moveShape(move, direction) {
+  gameOver()
   let newCoords = []
   activeShapeCoords.forEach(coord => {
     const coordBG = document.getElementById(coord)
@@ -262,31 +269,39 @@ function clearRow() {
 }
 
 function resetGame() {
-    shapeMoving = false
-    gameActive = 0
-    inactiveCells = []
-    rowsCleared = 0
-    score = 0
-    pauseButton.innerHTML = 'Pause'
-    cellsArray.forEach(cell => {
-      cell.classList.remove('shape')
-      cell.classList.remove('active-shape')
-      cell.classList.remove('inactive-shape')
-      cell.style.backgroundImage = ''
-      rotation = 0
-    })
+  shapeMoving = false
+  gameActive = 0
+  inactiveCells = []
+  rowsCleared = 0
+  score = 0
+  level = 0
+
+  pauseButton.innerHTML = 'Pause'
+  scoreDisplay.innerHTML = score
+  linesDisplay.innerHTML = rowsCleared
+  levelDisplay.innerHTML = level
+
+
+  cellsArray.forEach(cell => {
+    cell.classList.remove('shape')
+    cell.classList.remove('active-shape')
+    cell.classList.remove('inactive-shape')
+    cell.style.backgroundImage = ''
+    rotation = 0
+  })
 }
 
 
 function gameOver() {
   inactiveCells.forEach(coord => {
     const y = Number(coord.toString().split('_')[0])
-    if (y === 0) {
+    if (y <= 0) {
+      gameOverScoreDisplay.innerHTML = score
+      gameoverScreen.style.display = 'flex'
       shapeMoving = false
       ableToMoveLeft = false
       ableToMoveRight = false
       gameActive = 0
-      console.log('game over')
     }
   })
 }
@@ -304,12 +319,15 @@ function shapeMovementTimeout() {
   if (rowsCleared === 10) { 
     intervalTime = 325
     currentSpeed = intervalTime
+    level++
   } else if (rowsCleared === 20) {
     intervalTime = 225
     currentSpeed = intervalTime
+    level++
   } else if (rowsCleared === 30) {
     intervalTime = 175
     currentSpeed = intervalTime
+    level++
   }
   checkShapeMove()
   checkCollision()
@@ -322,7 +340,11 @@ shapeMovementTimeout()
 // ! ************ EVENT LISTENERS **************
 startButton.addEventListener('click', () => {
   if (gameActive) return 
-  addShape()
+  startScreen.style.display = 'none'
+  gridLeft.style.display = 'block'
+  gridRight.style.display = 'block'
+
+  setTimeout(addShape, 1000)
 }) 
 
 pauseButton.addEventListener('click', () => {
@@ -342,7 +364,16 @@ pauseButton.addEventListener('click', () => {
 resetButton.addEventListener('click', () => {
   if(gameActive) {
     resetGame()
+    setTimeout(addShape, 1000)
   }
+})
+
+newGameButton.addEventListener('click', () => {
+  resetGame()
+  gameoverScreen.style.display = 'none'
+  setTimeout(() => {
+    addShape()
+  }, 1000)
 })
 
 document.addEventListener('keydown', (event) => {
