@@ -26,13 +26,14 @@ let randomShape = {}
 let activeShapeCoords = []
 // ?  dom variables
 const grid = document.querySelector('.grid')
+const startScreen = document.querySelector('.start-screen')
 const startButton = document.querySelector('.start-button')
 const pauseButton = document.querySelector('.pause-button')
 const resetButton = document.querySelector('.reset-button')
 const scoreDisplay = document.getElementById('score-num')
 const linesDisplay = document.getElementById('lines-num')
-scoreDisplay.innerHTML = score
-linesDisplay.innerHTML = rowsCleared
+// scoreDisplay.innerHTML = score
+// linesDisplay.innerHTML = rowsCleared
 // ! **************************
 
 
@@ -267,7 +268,7 @@ function resetGame() {
     inactiveCells = []
     rowsCleared = 0
     score = 0
-    pauseButton.innerHTML = 'Pause'
+  pauseButton.innerHTML = '&#9646;&#9646;'
     cellsArray.forEach(cell => {
       cell.classList.remove('shape')
       cell.classList.remove('active-shape')
@@ -322,7 +323,8 @@ shapeMovementTimeout()
 // ! ************ EVENT LISTENERS **************
 startButton.addEventListener('click', () => {
   if (gameActive) return 
-  addShape()
+  startScreen.style.display = 'none'
+  setTimeout(addShape, 1000)
 }) 
 
 pauseButton.addEventListener('click', () => {
@@ -330,12 +332,12 @@ pauseButton.addEventListener('click', () => {
     shapeMoving = false
     ableToMoveLeft = false
     ableToMoveRight = false
-    pauseButton.innerHTML = 'Resume'
+    pauseButton.innerHTML = '&#9654;'
   } else if (!shapeMoving && gameActive) {
     shapeMoving = true
     ableToMoveLeft = true
     ableToMoveRight = false
-    pauseButton.innerHTML = 'Pause'
+    pauseButton.innerHTML = '&#9646;&#9646;'
   }
 }) 
 

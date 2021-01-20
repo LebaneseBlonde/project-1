@@ -10,18 +10,43 @@
 </head>
 <body>
   <main>
+    
     <div class="game-box">
-      <div class="grid"></div>
-      <div class="buttons">
-        <button class="start-button button">Start</button>
-        <button class="pause-button button">Pause</button>
-        <button class="reset-button button">Reset</button>
+      <div class="grid-container">
+        <img class="side-art" src="images/side1.png">
+        <div class="grid"></div>
+        <img class="side-art" src="images/side2.png">
       </div>
-      <div class="score-box">
-        <p class="score">Score: <span id="score-num"></span></p>
-        <p class="lines">Lines cleared: <span id="lines-num"></span></p>
-      </div>
+      <!-- <aside>
+        <div class="score-box">
+          <p class="score">Score: <span id="score-num">0</span></p>
+          <p class="lines">Lines cleared: <span id="lines-num">0</span></p>
+        </div>
+        <div class="buttons">
+          <button class="pause-button button">&#9208;</button>
+          <button class="reset-button button">&#10226;</button>
+        </div>
+      </aside> -->
     </div>
   </main>
+  <div class="modal start-screen">
+    <div class="grid modal-start">
+      <img class="logo" src="images/olympic_logo.png">
+      <h1>Olypmic Tetris</h1>
+      <div class="start-screen-buttons">
+        <button class="start-button button">PLAY</button>
+      </div>
+      <div class="leaderboard">
+        <h2>leaderboard</h2>
+        <ol>
+          <li>Cal 1000</li>
+          <li>Cal 1000</li>
+          <li>Cal 1000</li>
+          <li>Cal 1000</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <div class="modal pause-screen"></div>
 </body>
 </html>
