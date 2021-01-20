@@ -15,13 +15,13 @@ let currentSpeed = 400
 let intervalTime = currentSpeed
 let rotation = 0
 // ? object with arrays of shapes starting coords
-const iTet = { coords: ['0_3', '0_4', '0_5', '0_6'], background: ['images/i1.png', 'images/i2.png', 'images/i3.png', 'images/i4.png'], pivot: 1 }
-const jTet = { coords: ['0_4', '1_4', '1_5', '1_6'], background: ['images/j1.png', 'images/j2.png', 'images/j3.png', 'images/j4.png'], pivot: 2 }
-const lTet = { coords: ['0_5', '1_3', '1_4', '1_5'], background: ['images/l1.png', 'images/l2.png', 'images/l3.png', 'images/l4.png'], pivot: 2 }
-const oTet = { coords: ['0_4', '0_5', '1_4', '1_5'], background: ['images/o1.png', 'images/o2.png', 'images/o3.png', 'images/o4.png'], pivot: 1 }
-const sTet = { coords: ['0_4', '0_5', '1_3', '1_4'], background: ['images/s1.png', 'images/s2.png', 'images/s3.png', 'images/s4.png'], pivot: 3 }
-const tTet = { coords: ['0_4', '1_3', '1_4', '1_5'], background: ['images/t1.png', 'images/t2.png', 'images/t3.png', 'images/t4.png'], pivot: 2 }
-const zTet = { coords: ['0_4', '0_5', '1_5', '1_6'], background: ['images/z1.png', 'images/z2.png', 'images/z3.png', 'images/z4.png'], pivot: 2 }
+const iTet = { coords: ['0_3', '0_4', '0_5', '0_6'], background: ['images/i1.png', 'images/i2.png', 'images/i3.png', 'images/i4.png'], pivot: 1, canRotate: true }
+const jTet = { coords: ['0_4', '1_4', '1_5', '1_6'], background: ['images/j1.png', 'images/j2.png', 'images/j3.png', 'images/j4.png'], pivot: 2, canRotate: true }
+const lTet = { coords: ['0_5', '1_3', '1_4', '1_5'], background: ['images/l1.png', 'images/l2.png', 'images/l3.png', 'images/l4.png'], pivot: 2, canRotate: true }
+const oTet = { coords: ['0_4', '0_5', '1_4', '1_5'], background: ['images/o1.png', 'images/o2.png', 'images/o3.png', 'images/o4.png'], pivot: 1, canRotate: false }
+const sTet = { coords: ['0_4', '0_5', '1_3', '1_4'], background: ['images/s1.png', 'images/s2.png', 'images/s3.png', 'images/s4.png'], pivot: 3, canRotate: true }
+const tTet = { coords: ['0_4', '1_3', '1_4', '1_5'], background: ['images/t1.png', 'images/t2.png', 'images/t3.png', 'images/t4.png'], pivot: 2, canRotate: true }
+const zTet = { coords: ['0_4', '0_5', '1_5', '1_6'], background: ['images/z1.png', 'images/z2.png', 'images/z3.png', 'images/z4.png'], pivot: 2, canRotate: true }
 let randomShape = {}
 let activeShapeCoords = []
 // ?  dom variables
@@ -63,7 +63,7 @@ function addShape() {
   intervalTime = currentSpeed
   rotation = 0
   const shapesArray = [iTet, jTet, lTet, oTet, sTet, tTet, zTet]
-  // const shapesArray = [iTet]
+  // const shapesArray = [oTet]
   const randomShapeIndex = Math.floor(Math.random() * shapesArray.length) 
   randomShape = shapesArray[randomShapeIndex]
   
@@ -143,7 +143,8 @@ function moveShape(move, direction) {
 }
 
 function rotateShape() {
-  rotation = rotation === -270 ? 0 : rotation - 90
+  if(randomShape.canRotate) {
+    rotation = rotation === -270 ? 0 : rotation - 90
   let newCoords = []
   let newCoords2 = []
   activeShapeCoords.forEach((coord, index) => {
@@ -152,7 +153,7 @@ function rotateShape() {
     coordBG.style.backgroundImage = ''
     let x = Number(coord.toString().split('_')[1])
     let y = Number(coord.toString().split('_')[0])
-    const pivotIndex = 1
+    const pivotIndex = randomShape.pivot
     const pivotX = Number(activeShapeCoords[pivotIndex].toString().split('_')[1])
     const pivotY = Number(activeShapeCoords[pivotIndex].toString().split('_')[0])
     const relativeX = x - pivotX
@@ -182,7 +183,7 @@ function rotateShape() {
   newCoords.forEach((coord) => {
     let x = Number(coord.toString().split('_')[1])
     let y = Number(coord.toString().split('_')[0])
-    if (x <= 0) {
+    if (x < 0) {
       newCoords2 = newCoords
       newCoords = []
       newCoords2.forEach(coord2 => {
@@ -197,7 +198,7 @@ function rotateShape() {
   newCoords.forEach((coord) => {
     let x = Number(coord.toString().split('_')[1])
     let y = Number(coord.toString().split('_')[0])
-    if (y <= 0) {
+    if (y < 0) {
       newCoords2 = newCoords
       newCoords = []
       newCoords2.forEach(coord2 => {
@@ -216,7 +217,7 @@ function rotateShape() {
     coordBG.style.backgroundImage = `url('${randomShape.background[index]}')`
     coordBG.style.transform = `rotate(${rotation}deg)`
   })
-  
+  }
 } 
 
 function clearRow() {
@@ -271,6 +272,8 @@ function resetGame() {
       cell.classList.remove('shape')
       cell.classList.remove('active-shape')
       cell.classList.remove('inactive-shape')
+      cell.style.backgroundImage = ''
+      rotation = 0
     })
 }
 
@@ -350,7 +353,6 @@ document.addEventListener('keydown', (event) => {
      moveShape(-1, 'horizontal')
   } else if (key === 's' && !hasCollision && gameActive && shapeMoving) {
     intervalTime = 50
-    // console.log('im fast as fuck boiiii!');
   } else if (key === 'd' && !hasCollision && ableToMoveRight && gameActive && shapeMoving) {
     moveShape(1, 'horizontal')
   }
