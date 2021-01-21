@@ -55,6 +55,14 @@ input {
   font-weight:600;
 }
 
+ol {
+  margin: 0px;
+}
+
+li {
+  margin-left: 10px;
+}
+
 .grid {
   display: flex;
   flex-direction: row;

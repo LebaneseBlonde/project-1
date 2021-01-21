@@ -368,6 +368,9 @@ function orderAndDisplayScores() {
         ${player.name} ${player.score}
       </li>`
     })
+    while (array.length > 5) {
+      array.pop()
+    }
   leaderboard.forEach(board => {
     board.innerHTML = array.join('')
   })
@@ -437,6 +440,9 @@ resetButton.addEventListener('click', () => {
 newGameButton.addEventListener('click', () => {
   resetGame()
   gameoverScreen.style.display = 'none'
+  gameoverModal1.style.display = 'flex'
+  gameoverModal2.style.display = 'none'
+
   gridLeft.style.display = 'block'
   gridRight.style.display = 'block'
   gameActive = true
