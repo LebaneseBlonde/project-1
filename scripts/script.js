@@ -157,7 +157,6 @@ function checkShapeMove() {
 }
 
 function moveShape(move, direction) {
-  // gameOver()
   let newCoords = []
   activeShapeCoords.forEach(coord => {
     const coordBG = document.getElementById(coord)
@@ -233,7 +232,7 @@ function rotateShape() {
       })
     }
   })
-  // ? NOT WORKING stops shapes rotating outside the grid on the y axis
+  // ? NOT WORKING stops shapes rotating outside the grid on top of the y axis
   newCoords.forEach((coord) => {
     let x = Number(coord.toString().split('_')[1])
     let y = Number(coord.toString().split('_')[0])
@@ -244,6 +243,20 @@ function rotateShape() {
         let x = Number(coord2.toString().split('_')[1])
         let y = Number(coord2.toString().split('_')[0])
         y++
+        newCoords.push(`${y}_${x}`)
+      })
+    }
+  })
+  newCoords.forEach((coord) => {
+    let x = Number(coord.toString().split('_')[1])
+    let y = Number(coord.toString().split('_')[0])
+    if (y > height - 1) {
+      newCoords2 = newCoords
+      newCoords = []
+      newCoords2.forEach(coord2 => {
+        let x = Number(coord2.toString().split('_')[1])
+        let y = Number(coord2.toString().split('_')[0])
+        y--
         newCoords.push(`${y}_${x}`)
       })
     }
@@ -309,7 +322,6 @@ function resetGame() {
   level = 0
   currentSpeed = 400
   intervalTime = currentSpeed
-  // playAudio = true
 
   pauseButton.innerHTML = 'Pause'
   scoreDisplay.innerHTML = score
@@ -331,18 +343,15 @@ function gameOver() {
   inactiveCells.forEach(coord => {
     const y = Number(coord.toString().split('_')[0])
     
-    // if (y <= 0) {
       gameOverScoreDisplay.innerHTML = score
       gameoverScreen.style.display = 'flex'
       gridLeft.style.display = 'none'
       gridRight.style.display = 'none'
 
-      // playAudio = false
       shapeMoving = false
       ableToMoveLeft = false
       ableToMoveRight = false
       gameActive = false
-    // }
   })
 }
 
