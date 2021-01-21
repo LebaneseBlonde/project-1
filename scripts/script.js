@@ -100,6 +100,7 @@ function addShape() {
     randomShape.coords.forEach((coord, index) => {
       const coordBG = document.getElementById(coord)
       coordBG.style.backgroundImage = `url('${randomShape.background[index]}')`
+      coordBG.style.transform = 'rotate(0deg)'
     })
   
     activeShapeCoords = randomShape.coords
