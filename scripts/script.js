@@ -36,6 +36,7 @@ const startButton = document.querySelector('.start-button')
 const pauseButton = document.querySelector('.pause-button')
 const resetButton = document.querySelector('.reset-button')
 const newGameButton = document.querySelector('.new-game-button')
+const nameInput = document.querySelector('input')
 const scoreDisplay = document.getElementById('score-num')
 const gameOverScoreDisplay = document.getElementById('gameover-score')
 const linesDisplay = document.getElementById('lines-num')
@@ -388,8 +389,15 @@ newGameButton.addEventListener('click', () => {
 
 submitScoreButton.addEventListener('click', () => {
   // push score to object & to local storage
-  gameoverModal1.style.display = 'none'
-  gameoverModal2.style.display = 'flex'
+  if(nameInput.value === '') {
+    submitScoreButton.classList.add('shake')
+    setTimeout(() => {
+      submitScoreButton.classList.remove('shake')
+    }, 500)
+  } else {
+    gameoverModal1.style.display = 'none'
+    gameoverModal2.style.display = 'flex'
+  }
 })
 
 document.addEventListener('keydown', (event) => {
