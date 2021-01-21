@@ -53,10 +53,16 @@ const levelDisplay = document.getElementById('level-num')
 const gridLeft = document.querySelector('.grid-left-buttons')
 const gridRight = document.querySelector('.grid-right-scores')
 const audioPlayer = document.querySelector('audio')
+const leaderboard = Array.from(document.querySelectorAll('.leaderboard'))
 // ! **************************
 
 
 // ! ************ INIT **************
+// ? collect localstorage scores
+if (localStorage) {
+  playerScores = JSON.parse(localStorage.getItem('highscores')) || []
+  orderAndDisplayScores()
+}
 // ? create grid & cells - apply styling/classes
 const cell = document.createElement('div')
 for (let row = 0; row < height; row++) {
@@ -353,6 +359,20 @@ function resumeGame() {
   ableToMoveRight = true
   pauseButton.innerHTML = 'Pause'
 }
+
+function orderAndDisplayScores() {
+  const array = playerScores
+    .sort((playerA, playerB) => playerB.score - playerA.score)
+    .map(player => {
+      return `<li>
+        ${player.name} ${player.score}
+      </li>`
+    })
+  leaderboard.forEach(board => {
+    board.innerHTML = array.join('')
+  })
+
+}
 // ! **************************
 
 // ! ************ SET INTERVALS **************
@@ -407,10 +427,11 @@ pauseButton.addEventListener('click', () => {
 }) 
 
 resetButton.addEventListener('click', () => {
-  if(gameActive) {
-    resetGame()
-    setTimeout(addShape, 1000)
-  }
+  resetGame()
+  gameActive = true
+  setTimeout(() => {
+    addShape()
+  }, intervalTime)
 })
 
 newGameButton.addEventListener('click', () => {
@@ -432,6 +453,15 @@ submitScoreButton.addEventListener('click', () => {
       submitScoreButton.classList.remove('shake')
     }, 500)
   } else {
+    const newName = nameInput.value
+    const newScore = score
+    const player = { name: newName, score: newScore }
+    playerScores.push(player)
+    // ? Set the new player score in localStorage with the old ones
+    if (localStorage) {
+      localStorage.setItem('highscores', JSON.stringify(playerScores))
+    }
+    orderAndDisplayScores()
     gameoverModal1.style.display = 'none'
     gameoverModal2.style.display = 'flex'
   }

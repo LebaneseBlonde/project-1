@@ -159,6 +159,10 @@ input {
   display: none;
 }
 
+.leaderboard li{
+  /* margin-left: 10px; */
+}
+
 .logo {
   width: 200px;
   margin-top: 20px;
