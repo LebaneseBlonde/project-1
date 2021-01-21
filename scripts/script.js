@@ -363,9 +363,9 @@ function resumeGame() {
 function orderAndDisplayScores() {
   const array = playerScores
     .sort((playerA, playerB) => playerB.score - playerA.score)
-    .map(player => {
+    .map((player, index) => {
       return `<li>
-        <span>${player.name}</span> <span>...</span> <span>${player.score}</span>
+        <span>${index + 1}.  ${player.name}</span> <span>${player.score}</span>
       </li>`
     })
     while (array.length > 5) {
