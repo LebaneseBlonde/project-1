@@ -11,7 +11,7 @@ let ableToMoveLeft = true
 let ableToMoveRight = true
 let hasCollision = false
 let inactiveCells = []
-let gameActive = 0
+let gameActive = false
 let currentSpeed = 400
 let intervalTime = currentSpeed
 let rotation = 0
@@ -27,6 +27,8 @@ const tTet = { coords: ['0_4', '1_3', '1_4', '1_5'], background: ['images/t1.png
 const zTet = { coords: ['0_4', '0_5', '1_5', '1_6'], background: ['images/z1.png', 'images/z2.png', 'images/z3.png', 'images/z4.png'], audio: '7.wav', pivot: 2, canRotate: true }
 let randomShape = {}
 let activeShapeCoords = []
+
+let playerScores = []
 
 // ?  dom elements
 const grid = document.querySelector('.grid')
@@ -77,38 +79,38 @@ for (let row = 0; row < height; row++) {
 // ! ************ FUNCTIONS **************
 function addShape() {
   // ? below selects random shape
-  gameActive++
-  intervalTime = currentSpeed
-  rotation = 0
-  const shapesArray = [iTet, jTet, lTet, oTet, sTet, tTet, zTet]
-  // const shapesArray = [oTet]
-  const randomShapeIndex = Math.floor(Math.random() * shapesArray.length) 
-  randomShape = shapesArray[randomShapeIndex]
+  if (gameActive) {
+    intervalTime = currentSpeed
+    rotation = 0
+    const shapesArray = [iTet, jTet, lTet, oTet, sTet, tTet, zTet]
+    // const shapesArray = [oTet]
+    const randomShapeIndex = Math.floor(Math.random() * shapesArray.length) 
+    randomShape = shapesArray[randomShapeIndex]
+    
+    randomShape.coords.forEach(coord => {
+      const y = Number(coord.toString().split('_')[0])
+      setTimeout(() => {
+        if(y === 0 && document.getElementById(coord).classList.contains('active-shape')) {
+          gameOver()
+        }
+      }, intervalTime + 10)
+    })
   
-  randomShape.coords.forEach(coord => {
-    const y = Number(coord.toString().split('_')[0])
-    setTimeout(() => {
-      if(y === 0 && document.getElementById(coord).classList.contains('active-shape')) {
-        console.log('game over')
-        gameOver()
-      }
-    }, intervalTime + 10)
-  })
-
-  // ? below adds the background images to the cells
-  randomShape.coords.forEach((coord, index) => {
-    const coordBG = document.getElementById(coord)
-    coordBG.style.backgroundImage = `url('${randomShape.background[index]}')`
-  })
-
-  activeShapeCoords = randomShape.coords
-  shapeMoving = true
-  activeShapeCoords.forEach(coord => {
-    const shape = document.getElementById(coord)
-    shape.classList.add('active-shape')  
-  })
-  audioPlayer.src =  `./audio/${randomShape.audio}`
-  if(playAudio) audioPlayer.play()
+    // ? below adds the background images to the cells
+    randomShape.coords.forEach((coord, index) => {
+      const coordBG = document.getElementById(coord)
+      coordBG.style.backgroundImage = `url('${randomShape.background[index]}')`
+    })
+  
+    activeShapeCoords = randomShape.coords
+    shapeMoving = true
+    activeShapeCoords.forEach(coord => {
+      const shape = document.getElementById(coord)
+      shape.classList.add('active-shape')  
+    })
+    audioPlayer.src =  `./audio/${randomShape.audio}`
+    if(playAudio) audioPlayer.play()
+  }
 }
 
 function checkCollision() {
@@ -116,7 +118,6 @@ function checkCollision() {
   activeShapeCoords.forEach(coord => {
     const y = Number(coord.toString().split('_')[0])
     const x = Number(coord.toString().split('_')[1])
-    console.log(y)
     if (y === height - 1 || inactiveCells.includes(`${y + 1}_${x}`)) { //? maybe add || statement here
       shapeMoving = false
       hasCollision = true
@@ -132,7 +133,6 @@ function checkCollision() {
     inactiveCells = inactiveCells.flat()
     addShape()
   }
-  // gameOver()
 }
 
 function checkShapeMove() {
@@ -295,14 +295,14 @@ function clearRow() {
 
 function resetGame() {
   shapeMoving = false
-  gameActive = 0
+  gameActive = false
   inactiveCells = []
   rowsCleared = 0
   score = 0
   level = 0
   currentSpeed = 400
   intervalTime = currentSpeed
-  playAudio = true
+  // playAudio = true
 
   pauseButton.innerHTML = 'Pause'
   scoreDisplay.innerHTML = score
@@ -330,11 +330,11 @@ function gameOver() {
       gridLeft.style.display = 'none'
       gridRight.style.display = 'none'
 
-      playAudio = false
+      // playAudio = false
       shapeMoving = false
       ableToMoveLeft = false
       ableToMoveRight = false
-      gameActive = 0
+      gameActive = false
     // }
   })
 }
@@ -387,6 +387,7 @@ shapeMovementTimeout()
 // ! ************ EVENT LISTENERS **************
 startButton.addEventListener('click', () => {
   if (gameActive) return 
+  gameActive = true
   startScreen.style.display = 'none'
   gridLeft.style.display = 'block'
   gridRight.style.display = 'block'
@@ -416,6 +417,7 @@ newGameButton.addEventListener('click', () => {
   gameoverScreen.style.display = 'none'
   gridLeft.style.display = 'block'
   gridRight.style.display = 'block'
+  gameActive = true
   setTimeout(() => {
     addShape()
   }, intervalTime)
