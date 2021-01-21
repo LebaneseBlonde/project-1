@@ -1,10 +1,11 @@
-/* @font-face {
+@font-face {
   font-family: 'Beograd';
-  src: url('./fonts/Beograd.ttf');
-} */
-
-@import url('./fonts/Beograd.ttf');
-@import url('./fonts/Beograd.woff');
+  src: url('../fonts/Beograd.ttf'), url('../fonts/Beograd.woff');
+}
+@font-face {
+  font-family: 'Chakra Petch';
+  src: url('../fonts/ChakraPetch-SemiBold.ttf');
+}
 
 
 * {
@@ -63,6 +64,10 @@ li {
   display: flex;
   justify-content: space-between;
   text-transform: capitalize;
+}
+
+p, li, ol, button, input {
+  font-family: 'Chakra Petch', sans-serif;
 }
 
 .grid {
@@ -197,6 +202,7 @@ button{
   margin: 50px 0px;
   color: black;
   outline:0; 
+  width: 180px;
   cursor: pointer;
   font-size:1em;
   font-weight:600;
