@@ -29,6 +29,9 @@ let activeShapeCoords = []
 const grid = document.querySelector('.grid')
 const startScreen = document.querySelector('.start-screen')
 const gameoverScreen = document.querySelector('.gameover-screen')
+const gameoverModal1 = document.querySelector('.modal-gameover1')
+const gameoverModal2 = document.querySelector('.modal-gameover2')
+const submitScoreButton = document.querySelector('.submit-score-button')
 const startButton = document.querySelector('.start-button')
 const pauseButton = document.querySelector('.pause-button')
 const resetButton = document.querySelector('.reset-button')
@@ -298,6 +301,9 @@ function gameOver() {
     if (y <= 0) {
       gameOverScoreDisplay.innerHTML = score
       gameoverScreen.style.display = 'flex'
+      gridLeft.style.display = 'none'
+      gridRight.style.display = 'none'
+
       shapeMoving = false
       ableToMoveLeft = false
       ableToMoveRight = false
@@ -344,8 +350,10 @@ startButton.addEventListener('click', () => {
   gridLeft.style.display = 'block'
   gridRight.style.display = 'block'
 
-  setTimeout(addShape, 1000)
+  setTimeout(addShape, 500)
 }) 
+
+
 
 pauseButton.addEventListener('click', () => {
   if (shapeMoving && gameActive) {
@@ -371,9 +379,17 @@ resetButton.addEventListener('click', () => {
 newGameButton.addEventListener('click', () => {
   resetGame()
   gameoverScreen.style.display = 'none'
+  gridLeft.style.display = 'block'
+  gridRight.style.display = 'block'
   setTimeout(() => {
     addShape()
-  }, 1000)
+  }, 500)
+})
+
+submitScoreButton.addEventListener('click', () => {
+  // push score to object & to local storage
+  gameoverModal1.style.display = 'none'
+  gameoverModal2.style.display = 'flex'
 })
 
 document.addEventListener('keydown', (event) => {

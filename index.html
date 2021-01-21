@@ -20,7 +20,9 @@
           </div>
           <img class="side-art" src="images/side1.png">
         </div>
-        <div class="grid"></div>
+        <div class="grid-underlay">
+          <div class="grid"></div>
+        </div>
         <div class="grid-right">
           <div class="grid-right-scores">
             <p class="score">Score: <span id="score-num">0</span></p>
@@ -52,10 +54,18 @@
   </div>
   <div class="modal pause-screen"></div>
   <div class="modal gameover-screen">
-    <div class="grid modal-gameover">
+    <div class="grid modal-gameover1">
       <img class="logo" src="images/olympic_logo.png">
       <h1>Game Over</h1>
       <p>You scored: <span id="gameover-score"></span></p>
+      <input type="text" placeholder="Name">
+      <div class="gameover-screen-buttons">
+        <button class="submit-score-button button">SUBMIT SCORE</button>
+      </div>
+    </div>
+    <div class="grid modal-gameover2">
+      <img class="logo" src="images/olympic_logo.png">
+      <h1>Game Over</h1>
       <div class="gameover-screen-buttons">
         <button class="new-game-button button">NEW GAME</button>
       </div>
