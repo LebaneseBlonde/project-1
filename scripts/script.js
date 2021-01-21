@@ -365,7 +365,7 @@ function orderAndDisplayScores() {
     .sort((playerA, playerB) => playerB.score - playerA.score)
     .map(player => {
       return `<li>
-        ${player.name} ${player.score}
+        <span>${player.name}</span> <span>...</span> <span>${player.score}</span>
       </li>`
     })
     while (array.length > 5) {
