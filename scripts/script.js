@@ -89,7 +89,6 @@ function addShape() {
     intervalTime = currentSpeed
     rotation = 0
     const shapesArray = [iTet, jTet, lTet, oTet, sTet, tTet, zTet]
-    // const shapesArray = [oTet]
     const randomShapeIndex = Math.floor(Math.random() * shapesArray.length) 
     randomShape = shapesArray[randomShapeIndex]
     
@@ -516,20 +515,20 @@ document.addEventListener('keydown', (event) => {
   checkShapeMove()
   checkCollision()
   const key = event.key
-  if (key === 'a' && !hasCollision && ableToMoveLeft && gameActive && shapeMoving) {
+  if ((key === 'a' || key === 'ArrowLeft') && !hasCollision && ableToMoveLeft && gameActive && shapeMoving) {
      moveShape(-1, 'horizontal')
-  } else if (key === 's' && !hasCollision && gameActive && shapeMoving) {
+  } else if ((key === 's' || key === 'ArrowDown') && !hasCollision && gameActive && shapeMoving) {
     intervalTime = 50
-  } else if (key === 'd' && !hasCollision && ableToMoveRight && gameActive && shapeMoving) {
+  } else if ((key === 'd' || key === 'ArrowRight') && !hasCollision && ableToMoveRight && gameActive && shapeMoving) {
     moveShape(1, 'horizontal')
   }
 })
 
 document.addEventListener('keyup', (event) => {
   const key = event.key
-  if (key === 's' && !hasCollision && gameActive ) {
+  if ((key === 's' || key === 'ArrowDown') && !hasCollision && gameActive ) {
     intervalTime = currentSpeed
-  } else if (key === 'w' && !hasCollision && gameActive && shapeMoving) {
+  } else if ((key === 'w' || key === 'ArrowUp') && !hasCollision && gameActive && shapeMoving) {
     rotateShape()
   }
 })
