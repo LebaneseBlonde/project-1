@@ -18,13 +18,13 @@ let rotation = 0
 let playAudio = true
 
 // ? shape objects
-const iTet = { coords: ['0_3', '0_4', '0_5', '0_6'], background: ['images/i1.png', 'images/i2.png', 'images/i3.png', 'images/i4.png'], audio: '1.mp3', pivot: 1, canRotate: true }
-const jTet = { coords: ['0_4', '1_4', '1_5', '1_6'], background: ['images/j1.png', 'images/j2.png', 'images/j3.png', 'images/j4.png'], audio: '2.mp3', pivot: 2, canRotate: true }
-const lTet = { coords: ['0_5', '1_3', '1_4', '1_5'], background: ['images/l1.png', 'images/l2.png', 'images/l3.png', 'images/l4.png'], audio: '3.mp3', pivot: 2, canRotate: true }
-const oTet = { coords: ['0_4', '0_5', '1_4', '1_5'], background: ['images/o1.png', 'images/o2.png', 'images/o3.png', 'images/o4.png'], audio: '4.mp3', pivot: 1, canRotate: false }
-const sTet = { coords: ['0_4', '0_5', '1_3', '1_4'], background: ['images/s1.png', 'images/s2.png', 'images/s3.png', 'images/s4.png'], audio: '5.mp3', pivot: 3, canRotate: true }
-const tTet = { coords: ['0_4', '1_3', '1_4', '1_5'], background: ['images/t1.png', 'images/t2.png', 'images/t3.png', 'images/t4.png'], audio: '6.mp3', pivot: 2, canRotate: true }
-const zTet = { coords: ['0_4', '0_5', '1_5', '1_6'], background: ['images/z1.png', 'images/z2.png', 'images/z3.png', 'images/z4.png'], audio: '7.mp3', pivot: 2, canRotate: true }
+const iTet = { coords: ['0_3', '0_4', '0_5', '0_6'], background: ['images/i1.png', 'images/i2.png', 'images/i3.png', 'images/i4.png'], audio: '1.wav', pivot: 1, canRotate: true }
+const jTet = { coords: ['0_4', '1_4', '1_5', '1_6'], background: ['images/j1.png', 'images/j2.png', 'images/j3.png', 'images/j4.png'], audio: '2.wav', pivot: 2, canRotate: true }
+const lTet = { coords: ['0_5', '1_3', '1_4', '1_5'], background: ['images/l1.png', 'images/l2.png', 'images/l3.png', 'images/l4.png'], audio: '3.wav', pivot: 2, canRotate: true }
+const oTet = { coords: ['0_4', '0_5', '1_4', '1_5'], background: ['images/o1.png', 'images/o2.png', 'images/o3.png', 'images/o4.png'], audio: '4.wav', pivot: 1, canRotate: false }
+const sTet = { coords: ['0_4', '0_5', '1_3', '1_4'], background: ['images/s1.png', 'images/s2.png', 'images/s3.png', 'images/s4.png'], audio: '5.wav', pivot: 3, canRotate: true }
+const tTet = { coords: ['0_4', '1_3', '1_4', '1_5'], background: ['images/t1.png', 'images/t2.png', 'images/t3.png', 'images/t4.png'], audio: '6.wav', pivot: 2, canRotate: true }
+const zTet = { coords: ['0_4', '0_5', '1_5', '1_6'], background: ['images/z1.png', 'images/z2.png', 'images/z3.png', 'images/z4.png'], audio: '7.wav', pivot: 2, canRotate: true }
 let randomShape = {}
 let activeShapeCoords = []
 
@@ -98,8 +98,8 @@ function addShape() {
     const shape = document.getElementById(coord)
     shape.classList.add('active-shape')  
   })
-  audioPlayer.src =  `/audio/${randomShape.audio}`
-  audioPlayer.play()
+  audioPlayer.src =  `./audio/${randomShape.audio}`
+  if(playAudio) audioPlayer.play()
 }
 
 function checkCollision() {
@@ -289,6 +289,7 @@ function resetGame() {
   rowsCleared = 0
   score = 0
   level = 0
+  playAudio = true
 
   pauseButton.innerHTML = 'Pause'
   scoreDisplay.innerHTML = score
@@ -315,6 +316,7 @@ function gameOver() {
       gridLeft.style.display = 'none'
       gridRight.style.display = 'none'
 
+      playAudio = false
       shapeMoving = false
       ableToMoveLeft = false
       ableToMoveRight = false
@@ -420,11 +422,13 @@ submitScoreButton.addEventListener('click', () => {
 
 settingsButton.addEventListener('click', () => {
   pauseGame()
+  gridLeft.style.display = 'none'
   settingsScreen.style.display = 'flex'
 })
 
 resumeButton.addEventListener('click', () => {
   settingsScreen.style.display = 'none'
+  gridLeft.style.display = 'block'
   setTimeout(resumeGame, 500)
 })
 

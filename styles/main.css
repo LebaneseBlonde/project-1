@@ -1,9 +1,9 @@
 /* @font-face {
   font-family: 'Beograd';
-  src: url('/fonts/Beograd.ttf') format('truetype');
+  src: url('./fonts/Beograd.ttf');
 } */
 
-@import url('/fonts/Beograd.ttf');
+@import url('./fonts/Beograd.ttf');
 
 * {
   box-sizing: border-box;
