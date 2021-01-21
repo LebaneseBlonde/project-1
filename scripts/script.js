@@ -387,16 +387,24 @@ function shapeMovementTimeout() {
     score++
     scoreDisplay.innerHTML = score
   }
-  if (rowsCleared === 10) { 
-    intervalTime = 325
+  if (rowsCleared === 5) { 
+    intervalTime = 350
+    currentSpeed = intervalTime
+    level++
+  } else if (rowsCleared === 10) {
+    intervalTime = 300
+    currentSpeed = intervalTime
+    level++
+  } else if (rowsCleared === 15) {
+    intervalTime = 250
     currentSpeed = intervalTime
     level++
   } else if (rowsCleared === 20) {
-    intervalTime = 225
+    intervalTime = 200
     currentSpeed = intervalTime
     level++
-  } else if (rowsCleared === 30) {
-    intervalTime = 175
+  } else if (rowsCleared === 25) {
+    intervalTime = 150
     currentSpeed = intervalTime
     level++
   }
