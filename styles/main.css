@@ -84,7 +84,7 @@ input {
   align-items: center;
 }
 
-.modal-start, .modal-gameover1, .modal-gameover2 {
+.modal-start, .modal-gameover1, .modal-gameover2, .modal-settings {
   background-color: #C82515;
   display: flex;
   flex-direction: column;
@@ -149,6 +149,10 @@ input {
 }
 
 .gameover-screen {
+  display: none;
+}
+
+.settings-screen {
   display: none;
 }
 

@@ -15,6 +15,7 @@ let gameActive = 0
 let currentSpeed = 400
 let intervalTime = currentSpeed
 let rotation = 0
+let playAudio = true
 // ? object with arrays of shapes starting coords
 const iTet = { coords: ['0_3', '0_4', '0_5', '0_6'], background: ['images/i1.png', 'images/i2.png', 'images/i3.png', 'images/i4.png'], pivot: 1, canRotate: true }
 const jTet = { coords: ['0_4', '1_4', '1_5', '1_6'], background: ['images/j1.png', 'images/j2.png', 'images/j3.png', 'images/j4.png'], pivot: 2, canRotate: true }
@@ -31,10 +32,14 @@ const startScreen = document.querySelector('.start-screen')
 const gameoverScreen = document.querySelector('.gameover-screen')
 const gameoverModal1 = document.querySelector('.modal-gameover1')
 const gameoverModal2 = document.querySelector('.modal-gameover2')
+const settingsScreen = document.querySelector('.settings-screen')
 const submitScoreButton = document.querySelector('.submit-score-button')
 const startButton = document.querySelector('.start-button')
 const pauseButton = document.querySelector('.pause-button')
+const settingsButton = document.querySelector('.settings-button')
 const resetButton = document.querySelector('.reset-button')
+const audioButton = document.querySelector('.audio-button')
+const resumeButton = document.querySelector('.resume-button')
 const newGameButton = document.querySelector('.new-game-button')
 const nameInput = document.querySelector('input')
 const scoreDisplay = document.getElementById('score-num')
@@ -312,6 +317,20 @@ function gameOver() {
     }
   })
 }
+
+function pauseGame() {
+  shapeMoving = false
+  ableToMoveLeft = false
+  ableToMoveRight = false
+  pauseButton.innerHTML = 'Resume'
+}
+
+function resumeGame() {
+  shapeMoving = true
+  ableToMoveLeft = true
+  ableToMoveRight = true
+  pauseButton.innerHTML = 'Pause'
+}
 // ! **************************
 
 // ! ************ SET INTERVALS **************
@@ -358,15 +377,9 @@ startButton.addEventListener('click', () => {
 
 pauseButton.addEventListener('click', () => {
   if (shapeMoving && gameActive) {
-    shapeMoving = false
-    ableToMoveLeft = false
-    ableToMoveRight = false
-    pauseButton.innerHTML = 'Resume'
+    pauseGame()
   } else if (!shapeMoving && gameActive) {
-    shapeMoving = true
-    ableToMoveLeft = true
-    ableToMoveRight = false
-    pauseButton.innerHTML = 'Pause'
+    resumeGame()
   }
 }) 
 
@@ -397,6 +410,26 @@ submitScoreButton.addEventListener('click', () => {
   } else {
     gameoverModal1.style.display = 'none'
     gameoverModal2.style.display = 'flex'
+  }
+})
+
+settingsButton.addEventListener('click', () => {
+  pauseGame()
+  settingsScreen.style.display = 'flex'
+})
+
+resumeButton.addEventListener('click', () => {
+  settingsScreen.style.display = 'none'
+  setTimeout(resumeGame, 500)
+})
+
+audioButton.addEventListener('click', () => {
+  if(playAudio) {
+    playAudio = false
+    audioButton.innerHTML = '&#128263;'
+  } else {
+    playAudio = true
+    audioButton.innerHTML = '&#128264;'
   }
 })
 
