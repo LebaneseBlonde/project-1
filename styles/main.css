@@ -4,6 +4,8 @@
 } */
 
 @import url('./fonts/Beograd.ttf');
+@import url('./fonts/Beograd.woff');
+
 
 * {
   box-sizing: border-box;

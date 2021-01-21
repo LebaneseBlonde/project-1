@@ -15,7 +15,7 @@ let gameActive = 0
 let currentSpeed = 400
 let intervalTime = currentSpeed
 let rotation = 0
-let playAudio = true
+let playAudio = false
 
 // ? shape objects
 const iTet = { coords: ['0_3', '0_4', '0_5', '0_6'], background: ['images/i1.png', 'images/i2.png', 'images/i3.png', 'images/i4.png'], audio: '1.wav', pivot: 1, canRotate: true }
@@ -77,7 +77,6 @@ for (let row = 0; row < height; row++) {
 // ! ************ FUNCTIONS **************
 function addShape() {
   // ? below selects random shape
-  gameOver()
   gameActive++
   intervalTime = currentSpeed
   rotation = 0
@@ -86,6 +85,16 @@ function addShape() {
   const randomShapeIndex = Math.floor(Math.random() * shapesArray.length) 
   randomShape = shapesArray[randomShapeIndex]
   
+  randomShape.coords.forEach(coord => {
+    const y = Number(coord.toString().split('_')[0])
+    setTimeout(() => {
+      if(y === 0 && document.getElementById(coord).classList.contains('active-shape')) {
+        console.log('game over')
+        gameOver()
+      }
+    }, intervalTime + 10)
+  })
+
   // ? below adds the background images to the cells
   randomShape.coords.forEach((coord, index) => {
     const coordBG = document.getElementById(coord)
@@ -107,7 +116,8 @@ function checkCollision() {
   activeShapeCoords.forEach(coord => {
     const y = Number(coord.toString().split('_')[0])
     const x = Number(coord.toString().split('_')[1])
-    if (y === height - 1 || inactiveCells.includes(`${y + 1}_${x}`)) {
+    console.log(y)
+    if (y === height - 1 || inactiveCells.includes(`${y + 1}_${x}`)) { //? maybe add || statement here
       shapeMoving = false
       hasCollision = true
     }
@@ -122,6 +132,7 @@ function checkCollision() {
     inactiveCells = inactiveCells.flat()
     addShape()
   }
+  // gameOver()
 }
 
 function checkShapeMove() {
@@ -139,7 +150,7 @@ function checkShapeMove() {
 }
 
 function moveShape(move, direction) {
-  gameOver()
+  // gameOver()
   let newCoords = []
   activeShapeCoords.forEach(coord => {
     const coordBG = document.getElementById(coord)
@@ -289,6 +300,8 @@ function resetGame() {
   rowsCleared = 0
   score = 0
   level = 0
+  currentSpeed = 400
+  intervalTime = currentSpeed
   playAudio = true
 
   pauseButton.innerHTML = 'Pause'
@@ -310,7 +323,8 @@ function resetGame() {
 function gameOver() {
   inactiveCells.forEach(coord => {
     const y = Number(coord.toString().split('_')[0])
-    if (y <= 0) {
+    
+    // if (y <= 0) {
       gameOverScoreDisplay.innerHTML = score
       gameoverScreen.style.display = 'flex'
       gridLeft.style.display = 'none'
@@ -321,7 +335,7 @@ function gameOver() {
       ableToMoveLeft = false
       ableToMoveRight = false
       gameActive = 0
-    }
+    // }
   })
 }
 
@@ -404,7 +418,7 @@ newGameButton.addEventListener('click', () => {
   gridRight.style.display = 'block'
   setTimeout(() => {
     addShape()
-  }, 500)
+  }, intervalTime)
 })
 
 submitScoreButton.addEventListener('click', () => {
