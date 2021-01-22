@@ -98,7 +98,7 @@ function addShape() {
         if(y === 0 && document.getElementById(coord).classList.contains('active-shape')) {
           gameOver()
         }
-      }, intervalTime + 10)
+      }, intervalTime + 20)
     })
   
     // ? below adds the background images to the cells
@@ -180,10 +180,10 @@ function moveShape(move, direction) {
 }
 
 function rotateShape() {
-  if(randomShape.canRotate) {
-    rotation = rotation === -270 ? 0 : rotation - 90
   let newCoords = []
   let newCoords2 = []
+  let rotationBlocked
+
   activeShapeCoords.forEach((coord, index) => {
     const coordBG = document.getElementById(coord)
     coordBG.classList.remove('active-shape')
@@ -203,8 +203,10 @@ function rotateShape() {
   }) 
   // ? stops shapes rotating outside the grid on the right side of the x axis
   newCoords.forEach((coord) => {
+    if (inactiveCells.includes(coord)) return rotationBlocked = true
     let x = Number(coord.toString().split('_')[1])
     let y = Number(coord.toString().split('_')[0])
+
     if (x > width -1) {
       newCoords2 = newCoords
       newCoords = []
@@ -216,6 +218,10 @@ function rotateShape() {
       })
     }
   })
+  if (rotationBlocked) return
+
+  if (randomShape.canRotate) {
+    rotation = rotation === -270 ? 0 : rotation - 90
   // ? stops shapes rotating outside the grid on the left side of the x axis
   newCoords.forEach((coord) => {
     let x = Number(coord.toString().split('_')[1])
@@ -263,12 +269,14 @@ function rotateShape() {
   activeShapeCoords = newCoords
 
   activeShapeCoords.forEach((coord, index) => {
+    // console.log('hello')
     const coordBG = document.getElementById(coord)
     coordBG.classList.add('active-shape')
     coordBG.style.backgroundImage = `url('${randomShape.background[index]}')`
     coordBG.style.transform = `rotate(${rotation}deg)`
   })
   }
+  checkCollision()
 } 
 
 function clearRow() {
@@ -282,6 +290,7 @@ function clearRow() {
       scoreDisplay.innerHTML = score
       linesDisplay.innerHTML = rowsCleared
       for (let i = 0; i < width; i++) {
+        document
         document.getElementById(`${key}_${i}`).classList.remove('inactive-shape')
         document.getElementById(`${key}_${i}`).style.backgroundImage = ''
       }
