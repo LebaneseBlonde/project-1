@@ -98,7 +98,7 @@ function addShape() {
         if(y === 0 && document.getElementById(coord).classList.contains('active-shape')) {
           gameOver()
         }
-      }, intervalTime + 20)
+      }, intervalTime + 51)
     })
   
     // ? below adds the background images to the cells
@@ -507,6 +507,7 @@ settingsButton.addEventListener('click', () => {
 resumeButton.addEventListener('click', () => {
   settingsScreen.style.display = 'none'
   gridLeft.style.display = 'block'
+  pauseButton.innerHTML = 'Pause'
   setTimeout(resumeGame, 500)
 })
 
